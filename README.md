@@ -12,6 +12,9 @@ A plugin that adds a lobby when waiting for players
   *2. Find the "PluginAPI" folder there, it contains the "plugins" folder.*
   
   *3. Select either the port of your server to install the same on that server or the "global" folder to install the plugin for all servers*
+## View
+https://user-images.githubusercontent.com/76150070/208076431-7e7a98e3-d1b3-4365-a989-a09e7fa7f639.mp4
+
 
 ## Config
 ```yml
