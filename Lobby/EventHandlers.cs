@@ -9,6 +9,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using UnityEngine;
+    using Random = UnityEngine.Random;
 
     public class EventHandlers
     {
@@ -17,8 +18,6 @@
         private CoroutineHandle lobbyTimer;
 
         private string text;
-
-        public System.Random rnd = new System.Random();
 
         public static bool IsLobby = true;
 
@@ -64,7 +63,7 @@
 
         public void SpawnManager()
         {
-            int rndRoom = rnd.Next(1, 6);
+            int rndRoom = Random.Range(1, 6);
 
             switch (rndRoom)
             {
