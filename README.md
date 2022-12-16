@@ -1,5 +1,7 @@
 # Lobby
-![img](https://img.shields.io/github/downloads/MrAfitol/Lobby/total.svg)
+[![GitHub release](https://flat.badgen.net/github/tag/MrAfitol/Lobby)](https://github.com/MrAfitol/Lobby/releases/)
+![GitHub downloads](https://flat.badgen.net/github/assets-dl/MrAfitol/Lobby)
+
 
 A plugin that adds a lobby when waiting for players
 ## How download ?
