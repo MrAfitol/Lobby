@@ -99,8 +99,7 @@
                 IsLobby = false;
                 foreach (var player in Player.GetPlayers())
                 {
-                    if (!player.IsOverwatchEnabled)
-                        player.SetRole(RoleTypeId.None);
+                    player.SetRole(RoleTypeId.None);
                 }
                 Timing.CallDelayed(0.25f, () =>
                 {
