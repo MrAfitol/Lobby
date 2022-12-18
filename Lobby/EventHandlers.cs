@@ -6,6 +6,7 @@
     using PluginAPI.Core;
     using PluginAPI.Core.Attributes;
     using PluginAPI.Enums;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using UnityEngine;
@@ -24,40 +25,54 @@
         [PluginEvent(ServerEventType.WaitingForPlayers)]
         public void OnWaitingForPlayers()
         {
-            IsLobby = true;
-
-            SpawnManager();
-
-            GameObject.Find("StartRound").transform.localScale = Vector3.zero;
-
-            if (lobbyTimer.IsRunning)
+            try
             {
-                Timing.KillCoroutines(lobbyTimer);
-            }
+                IsLobby = true;
 
-            lobbyTimer = Timing.RunCoroutine(LobbyTimer());
+                SpawnManager();
+
+                GameObject.Find("StartRound").transform.localScale = Vector3.zero;
+
+                if (lobbyTimer.IsRunning)
+                {
+                    Timing.KillCoroutines(lobbyTimer);
+                }
+
+                lobbyTimer = Timing.RunCoroutine(LobbyTimer());
+            }
+            catch (Exception e)
+            {
+                Log.Error("[Lobby] [Event: OnWaitingForPlayers] " + e.ToString());
+            }
         }
 
         [PluginEvent(ServerEventType.PlayerJoined)]
         public void OnPlayerJoin(Player player)
         {
-            if (IsLobby && (GameCore.RoundStart.singleton.NetworkTimer > 1 || GameCore.RoundStart.singleton.NetworkTimer == -2))
+            try
             {
-                Timing.CallDelayed(0.1f, () =>
+                if (IsLobby && (GameCore.RoundStart.singleton.NetworkTimer > 1 || GameCore.RoundStart.singleton.NetworkTimer == -2))
                 {
-                    player.SetRole(Lobby.Instance.Config.LobbyPlayerRole);
+                    Timing.CallDelayed(0.1f, () =>
+                    {
+                        player.SetRole(Lobby.Instance.Config.LobbyPlayerRole);
 
-                    player.IsGodModeEnabled = true;
-                });
+                        player.IsGodModeEnabled = true;
+                    });
 
-                Timing.CallDelayed(0.5f, () =>
-                {
+                    Timing.CallDelayed(0.5f, () =>
+                    {
 
-                    player.Position = LobbiPos;
+                        player.Position = LobbiPos;
 
-                    player.EffectsManager.EnableEffect<MovementBoost>();
-                    player.EffectsManager.ChangeState<MovementBoost>(Lobby.Instance.Config.MovementBoostIntensity);
-                });
+                        player.EffectsManager.EnableEffect<MovementBoost>();
+                        player.EffectsManager.ChangeState<MovementBoost>(Lobby.Instance.Config.MovementBoostIntensity);
+                    });
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("[Lobby] [Event: OnPlayerJoin] " + e.ToString());
             }
         }
 
@@ -79,21 +94,28 @@
         [PluginEvent(ServerEventType.RoundStart)]
         public void OnRoundStarted()
         {
-            foreach (var item in Player.GetPlayers())
+            try
             {
-                item.SetRole(RoleTypeId.None);
-            }
-
-            IsLobby = false;
-            Timing.CallDelayed(0.25f, () =>
-            {
-                foreach (Player ply in Player.GetPlayers())
+                IsLobby = false;
+                foreach (var player in Player.GetPlayers())
                 {
-
-                    ply.IsGodModeEnabled = false;
-                    ply.EffectsManager.DisableEffect<MovementBoost>();
+                    if (!player.IsOverwatchEnabled)
+                        player.SetRole(RoleTypeId.None);
                 }
-            });
+                Timing.CallDelayed(0.25f, () =>
+                {
+                    foreach (Player ply in Player.GetPlayers())
+                    {
+
+                        ply.IsGodModeEnabled = false;
+                        ply.EffectsManager.DisableEffect<MovementBoost>();
+                    }
+                });
+            }
+            catch (Exception e)
+            {
+                Log.Error("[Lobby] [Event: OnRoundStarted] " + e.ToString());
+            }
         }
 
         private IEnumerator<float> LobbyTimer()
