@@ -22,20 +22,23 @@ https://user-images.githubusercontent.com/76150070/208076431-7e7a98e3-d1b3-4365-
 title_text: <size=50><color=#F0FF00><b>Waiting for players, {seconds}</b></color></size>
 # Text showing the number of players ({players} - Text with the number of players)
 player_count_text: <size=40><color=#FFA600><i>{players}</i></color></size>
-# What will be written if the lobby is locked ?
+# What will be written if the lobby is locked?
 server_pause_text: Server is suspended
-# What will be written when there is a second left ?
+# What will be written when there is a second left?
 second_left_text: '{seconds} second left'
-# What will be written when there is more than a second left ?
+# What will be written when there is more than a second left?
 seconds_left_text: '{seconds} seconds left'
-# What will be written when the round starts ?
+# What will be written when the round starts?
 round_start_text: Round starting
-# What will be written when there is only one player on the server ?
+# What will be written when there is only one player on the server?
 player_join_text: player joined
-# What will be written when there is more than one player on the server ?
+# What will be written when there is more than one player on the server?
 players_join_text: players joined
-# What is the movement boost intensity ?
+# What is the movement boost intensity?
 movement_boost_intensity: 50
-# What role will people play in the lobby ?
+# What role will people play in the lobby?
 lobby_player_role: Tutorial
+# What items will be given when spawning a player in the lobby? (Leave blank to keep inventory empty)
+lobby_inventory:
+- Coin
 ```
