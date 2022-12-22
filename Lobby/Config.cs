@@ -1,6 +1,7 @@
 ﻿namespace Lobby
 {
     using PlayerRoles;
+    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
 
@@ -35,5 +36,11 @@
 
         [Description("What role will people play in the lobby?")]
         public RoleTypeId LobbyPlayerRole { get; set; } = RoleTypeId.Tutorial;
+
+        [Description("What items will be given when spawning a player in the lobby? (Leave blank to keep inventory empty)")]
+        public List<ItemType> LobbyInventory { get; set; } = new List<ItemType>()
+        {
+            ItemType.Coin
+        };
     }
 }

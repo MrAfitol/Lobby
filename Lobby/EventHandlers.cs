@@ -1,6 +1,7 @@
 ﻿namespace Lobby
 {
     using CustomPlayerEffects;
+    using InventorySystem;
     using MEC;
     using PlayerRoles;
     using PluginAPI.Core;
@@ -14,7 +15,7 @@
 
     public class EventHandlers
     {
-        private Vector3 LobbiPos;
+        private Vector3 LobbyPos;
 
         private CoroutineHandle lobbyTimer;
 
@@ -58,12 +59,20 @@
                         player.SetRole(Lobby.Instance.Config.LobbyPlayerRole);
 
                         player.IsGodModeEnabled = true;
+
+                        if (Lobby.Instance.Config.LobbyInventory.Count > 0)
+                        {
+                            foreach (var item in Lobby.Instance.Config.LobbyInventory)
+                            {
+                                player.ReferenceHub.inventory.ServerAddItem(item);
+                            }
+                        }
                     });
 
                     Timing.CallDelayed(0.5f, () =>
                     {
 
-                        player.Position = LobbiPos;
+                        player.Position = LobbyPos;
 
                         player.EffectsManager.EnableEffect<MovementBoost>();
                         player.EffectsManager.ChangeState<MovementBoost>(Lobby.Instance.Config.MovementBoostIntensity);
@@ -82,12 +91,12 @@
 
             switch (rndRoom)
             {
-                case 1: LobbiPos = new Vector3(162.893f, 1019.470f, -13.430f); break;
-                case 2: LobbiPos = new Vector3(107.698f, 1014.048f, -12.555f); break;
-                case 3: LobbiPos = new Vector3(39.262f, 1014.112f, -31.844f); break;
-                case 4: LobbiPos = new Vector3(-15.854f, 1014.461f, -31.543f); break;
-                case 5: LobbiPos = new Vector3(130.483f, 993.366f, 20.601f); break;
-                default: LobbiPos = new Vector3(39.262f, 1014.112f, -31.844f); break;
+                case 1: LobbyPos = new Vector3(162.893f, 1019.470f, -13.430f); break;
+                case 2: LobbyPos = new Vector3(107.698f, 1014.048f, -12.555f); break;
+                case 3: LobbyPos = new Vector3(39.262f, 1014.112f, -31.844f); break;
+                case 4: LobbyPos = new Vector3(-15.854f, 1014.461f, -31.543f); break;
+                case 5: LobbyPos = new Vector3(130.483f, 993.366f, 20.601f); break;
+                default: LobbyPos = new Vector3(39.262f, 1014.112f, -31.844f); break;
             }
         }
 
