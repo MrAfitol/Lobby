@@ -37,10 +37,23 @@
         [Description("What role will people play in the lobby?")]
         public RoleTypeId LobbyPlayerRole { get; set; } = RoleTypeId.Tutorial;
 
+        [Description("Display text on Intercom? (Works only when lobby Intercom type)")]
+        public bool DisplayInIcom { get; set; } = true;
+
+        [Description("What size will the text be in the Intercom? (The larger the value, the smaller it will be)")]
+        public int IcomTextSize { get; set; } = 20;
+
         [Description("What items will be given when spawning a player in the lobby? (Leave blank to keep inventory empty)")]
         public List<ItemType> LobbyInventory { get; set; } = new List<ItemType>()
         {
             ItemType.Coin
+        };
+
+        [Description("In what locations can people spawn? (If it is less than 1, a random one will be selected)")]
+        public List<LobbyLocationType> LobbyLocation { get; set; } = new List<LobbyLocationType>()
+        {
+            LobbyLocationType.Tower,
+            LobbyLocationType.Intercom
         };
     }
 }

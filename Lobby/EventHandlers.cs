@@ -1,9 +1,13 @@
 ﻿namespace Lobby
 {
     using CustomPlayerEffects;
+    using Interactables.Interobjects.DoorUtils;
     using InventorySystem;
+    using InventorySystem.Items;
+    using InventorySystem.Items.Pickups;
     using MEC;
     using PlayerRoles;
+    using PlayerRoles.Voice;
     using PluginAPI.Core;
     using PluginAPI.Core.Attributes;
     using PluginAPI.Enums;
@@ -11,15 +15,14 @@
     using System.Collections.Generic;
     using System.Linq;
     using UnityEngine;
-    using Random = UnityEngine.Random;
 
     public class EventHandlers
     {
-        private Vector3 LobbyPos;
-
         private CoroutineHandle lobbyTimer;
 
         private string text;
+
+        private LobbyLocationType curLobbyLocationType;
 
         public static bool IsLobby = true;
 
@@ -28,18 +31,20 @@
         {
             try
             {
-                IsLobby = true;
+                Timing.CallDelayed(0.1f, () => {
+                    IsLobby = true;
 
-                SpawnManager();
+                    SpawnManager();
+                    GameObject.Find("StartRound").transform.localScale = Vector3.zero;
 
-                GameObject.Find("StartRound").transform.localScale = Vector3.zero;
+                    if (lobbyTimer.IsRunning)
+                    {
+                        Timing.KillCoroutines(lobbyTimer);
+                    }
 
-                if (lobbyTimer.IsRunning)
-                {
-                    Timing.KillCoroutines(lobbyTimer);
-                }
-
-                lobbyTimer = Timing.RunCoroutine(LobbyTimer());
+                    if (curLobbyLocationType == LobbyLocationType.Intercom && Lobby.Instance.Config.DisplayInIcom) lobbyTimer = Timing.RunCoroutine(LobbyIcomTimer());
+                    else lobbyTimer = Timing.RunCoroutine(LobbyTimer());
+                });
             }
             catch (Exception e)
             {
@@ -54,7 +59,7 @@
             {
                 if (IsLobby && (GameCore.RoundStart.singleton.NetworkTimer > 1 || GameCore.RoundStart.singleton.NetworkTimer == -2))
                 {
-                    Timing.CallDelayed(0.1f, () =>
+                    Timing.CallDelayed(0.5f, () =>
                     {
                         player.SetRole(Lobby.Instance.Config.LobbyPlayerRole);
 
@@ -69,10 +74,10 @@
                         }
                     });
 
-                    Timing.CallDelayed(0.5f, () =>
+                    Timing.CallDelayed(0.6f, () =>
                     {
-
-                        player.Position = LobbyPos;
+                        player.Position = LobbyLocationHandler.LobbyPosition;
+                        player.Rotation = LobbyLocationHandler.LobbyRotation.eulerAngles;
 
                         player.EffectsManager.EnableEffect<MovementBoost>();
                         player.EffectsManager.ChangeState<MovementBoost>(Lobby.Instance.Config.MovementBoostIntensity);
@@ -87,16 +92,23 @@
 
         public void SpawnManager()
         {
-            int rndRoom = Random.Range(1, 6);
-
-            switch (rndRoom)
+            try
             {
-                case 1: LobbyPos = new Vector3(162.893f, 1019.470f, -13.430f); break;
-                case 2: LobbyPos = new Vector3(107.698f, 1014.048f, -12.555f); break;
-                case 3: LobbyPos = new Vector3(39.262f, 1014.112f, -31.844f); break;
-                case 4: LobbyPos = new Vector3(-15.854f, 1014.461f, -31.543f); break;
-                case 5: LobbyPos = new Vector3(130.483f, 993.366f, 20.601f); break;
-                default: LobbyPos = new Vector3(39.262f, 1014.112f, -31.844f); break;
+                curLobbyLocationType = Lobby.Instance.Config.LobbyLocation.RandomItem();
+
+                switch (curLobbyLocationType)
+                {
+                    case LobbyLocationType.Tower:
+                        LobbyLocationHandler.TowerLocation();
+                        break;
+                    case LobbyLocationType.Intercom:
+                        LobbyLocationHandler.IntercomLocation();
+                        break;
+                }
+            }
+            catch(Exception e)
+            {
+                Log.Error("[Lobby] [Method: SpawnManager] " + e.ToString());
             }
         }
 
@@ -109,21 +121,63 @@
                 foreach (var player in Player.GetPlayers())
                 {
                     player.SetRole(RoleTypeId.None);
-                }
-                Timing.CallDelayed(0.25f, () =>
-                {
-                    foreach (Player ply in Player.GetPlayers())
-                    {
 
-                        ply.IsGodModeEnabled = false;
-                        ply.EffectsManager.DisableEffect<MovementBoost>();
-                    }
-                });
+                    Timing.CallDelayed(0.25f, () =>
+                    {
+                        player.IsGodModeEnabled = false;
+                        player.EffectsManager.DisableEffect<MovementBoost>();
+                    });
+                }
             }
             catch (Exception e)
             {
                 Log.Error("[Lobby] [Event: OnRoundStarted] " + e.ToString());
             }
+        }
+
+        [PluginEvent(ServerEventType.PlayerInteractDoor)]
+        public bool OnPlayerInteractDoor(Player ply, DoorVariant door, bool canOpen)
+        {
+            if (IsLobby)
+            {
+                canOpen = false;
+                return false;
+            }
+
+            return true;
+        }
+
+        [PluginEvent(ServerEventType.PlayerSearchPickup)]
+        public bool OnSearchPickup(Player player, ItemPickupBase pickup)
+        {
+            if (IsLobby)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        [PluginEvent(ServerEventType.PlayerDropItem)]
+        public bool OnPlayerDroppedItem(Player player, ItemBase item)
+        {
+            if (IsLobby)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        [PluginEvent(ServerEventType.PlayerThrowItem)]
+        public bool OnThrowItem(Player player, ItemBase item, Rigidbody rb)
+        {
+            if (IsLobby)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private IEnumerator<float> LobbyTimer()
@@ -180,6 +234,62 @@
                 {
                     ply.ReceiveHint(text.ToString(), 1f);
                 }
+
+                yield return Timing.WaitForSeconds(1f);
+            }
+        }
+
+        private IEnumerator<float> LobbyIcomTimer()
+        {
+            while (!Round.IsRoundStarted)
+            {
+                text = string.Empty;
+
+                if (25 != 0 && 25 < 0)
+                {
+                    for (int i = 25; i < 0; i++)
+                    {
+                        text += "\n";
+                    }
+                }
+
+                text += Lobby.Instance.Config.TitleText;
+
+                text += "\n" + Lobby.Instance.Config.PlayerCountText;
+
+                short NetworkTimer = GameCore.RoundStart.singleton.NetworkTimer;
+
+                switch (NetworkTimer)
+                {
+                    case -2: text = text.Replace("{seconds}", Lobby.Instance.Config.ServerPauseText); break;
+
+                    case -1: text = text.Replace("{seconds}", Lobby.Instance.Config.RoundStartText); break;
+
+                    case 1: text = text.Replace("{seconds}", Lobby.Instance.Config.SecondLeftText.Replace("{seconds}", NetworkTimer.ToString())); break;
+
+                    case 0: text = text.Replace("{seconds}", Lobby.Instance.Config.RoundStartText); break;
+
+                    default: text = text.Replace("{seconds}", Lobby.Instance.Config.SecondsLeftText.Replace("{seconds}", NetworkTimer.ToString())); break;
+                }
+
+                if (Player.GetPlayers().Count() == 1)
+                {
+                    text = text.Replace("{players}", $"{Player.GetPlayers().Count()} " + Lobby.Instance.Config.PlayerJoinText);
+                }
+                else
+                {
+                    text = text.Replace("{players}", $"{Player.GetPlayers().Count()} " + Lobby.Instance.Config.PlayersJoinText);
+                }
+
+                if (25 != 0 && 25 > 0)
+                {
+                    for (int i = 0; i < 25; i++)
+                    {
+                        text += "\n";
+                    }
+                }
+
+                IntercomDisplay._singleton.Network_overrideText = $"<size={Lobby.Instance.Config.IcomTextSize}>" + text + "</size>";
 
                 yield return Timing.WaitForSeconds(1f);
             }
