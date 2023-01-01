@@ -38,7 +38,21 @@ players_join_text: players joined
 movement_boost_intensity: 50
 # What role will people play in the lobby?
 lobby_player_role: Tutorial
+# Display text on Intercom? (Works only when lobby Intercom type)
+display_in_icom: true
+# What size will the text be in the Intercom? (The larger the value, the smaller it will be)
+icom_text_size: 20
 # What items will be given when spawning a player in the lobby? (Leave blank to keep inventory empty)
 lobby_inventory:
 - Coin
+# In what locations can people spawn? (If it is less than 1, a random one will be selected)
+lobby_location:
+- Tower
+- Intercom
+```
+
+## LobbyLocationType
+```
+Tower,
+Intercom
 ```
