@@ -5,13 +5,18 @@
 
 A plugin that adds a lobby when waiting for players
 ## How download ?
-  *1. Find the SCP SL server config folder*
+   - *1. Find the SCP SL server config folder*
+   
+   *("C:\Users\(user name)\AppData\Roaming\SCP Secret Laboratory\" for windows, "/home/(user name)/.config/SCP Secret Laboratory/" for linux)*
   
-  *("C:\Users\(user name)\AppData\Roaming\SCP Secret Laboratory\" for windows, "/home/(user name)/.config/SCP Secret Laboratory/" for linux)*
+   - *2. Find the "PluginAPI" folder there, it contains the "plugins" folder.*
   
-  *2. Find the "PluginAPI" folder there, it contains the "plugins" folder.*
+   - *3. Select either the port of your server to install the same on that server or the "global" folder to install the plugin for all servers*
   
-  *3. Select either the port of your server to install the same on that server or the "global" folder to install the plugin for all servers*
+  ***Or***
+  
+   - *Run the command in console `p install MrAfitol/Lobby`*
+  
 ## View
 https://user-images.githubusercontent.com/76150070/208076431-7e7a98e3-d1b3-4365-a989-a09e7fa7f639.mp4
 
