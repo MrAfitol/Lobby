@@ -32,7 +32,7 @@
             var IcomRoom = EntranceZone.Rooms.FirstOrDefault(x => x.GameObject.name == "EZ_Intercom");
 
             LobbyPosition = IcomRoom.Transform.TransformPoint(new Vector3(-4.16f, -3.860f, -2.113f));
-            LobbyRotation = Quaternion.Euler(IcomRoom.Rotation.x, IcomRoom.Rotation.y * -1, IcomRoom.Rotation.z);
+            LobbyRotation = Quaternion.Euler(IcomRoom.Rotation.eulerAngles.x, IcomRoom.Rotation.eulerAngles.y + 180, IcomRoom.Rotation.eulerAngles.z);
         }
     }
 }

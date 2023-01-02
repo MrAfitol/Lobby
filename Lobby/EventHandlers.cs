@@ -94,6 +94,12 @@
         {
             try
             {
+                if (Lobby.Instance.Config.LobbyLocation.Count <= 0)
+                {
+                    LobbyLocationHandler.TowerLocation();
+                    return;
+                }
+
                 curLobbyLocationType = Lobby.Instance.Config.LobbyLocation.RandomItem();
 
                 switch (curLobbyLocationType)
@@ -103,6 +109,9 @@
                         break;
                     case LobbyLocationType.Intercom:
                         LobbyLocationHandler.IntercomLocation();
+                        break;
+                    default:
+                        LobbyLocationHandler.TowerLocation();
                         break;
                 }
             }
