@@ -195,14 +195,6 @@
             {
                 text = string.Empty;
 
-                if (25 != 0 && 25 < 0)
-                {
-                    for (int i = 25; i < 0; i++)
-                    {
-                        text += "\n";
-                    }
-                }
-
                 text += Lobby.Instance.Config.TitleText;
 
                 text += "\n" + Lobby.Instance.Config.PlayerCountText;
@@ -253,14 +245,6 @@
             while (!Round.IsRoundStarted)
             {
                 text = string.Empty;
-
-                if (25 != 0 && 25 < 0)
-                {
-                    for (int i = 25; i < 0; i++)
-                    {
-                        text += "\n";
-                    }
-                }
 
                 text += Lobby.Instance.Config.TitleText;
 
