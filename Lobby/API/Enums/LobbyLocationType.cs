@@ -3,6 +3,8 @@
     public enum LobbyLocationType
     {
         Tower,
-        Intercom
+        Intercom,
+        GR18,
+        SCP173
     }
 }

@@ -78,8 +78,8 @@
     <Compile Include="Config.cs" />
     <Compile Include="EventHandlers.cs" />
     <Compile Include="Lobby.cs" />
-    <Compile Include="LobbyLocationHandler.cs" />
-    <Compile Include="LobbyLocationType.cs" />
+    <Compile Include="API\LobbyLocationHandler.cs" />
+    <Compile Include="API\Enums\LobbyLocationType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -76,8 +76,8 @@
 
                     Timing.CallDelayed(0.6f, () =>
                     {
-                        player.Position = LobbyLocationHandler.LobbyPosition;
-                        player.Rotation = LobbyLocationHandler.LobbyRotation.eulerAngles;
+                        player.Position = LobbyLocationHandler.Point.transform.position;
+                        player.Rotation = LobbyLocationHandler.Point.transform.rotation.eulerAngles;
 
                         player.EffectsManager.EnableEffect<MovementBoost>();
                         player.EffectsManager.ChangeState<MovementBoost>(Lobby.Instance.Config.MovementBoostIntensity);
@@ -109,6 +109,12 @@
                         break;
                     case LobbyLocationType.Intercom:
                         LobbyLocationHandler.IntercomLocation();
+                        break;
+                    case LobbyLocationType.GR18:
+                        LobbyLocationHandler.GRLocation();
+                        break;
+                    case LobbyLocationType.SCP173:
+                        LobbyLocationHandler.SCP173Location();
                         break;
                     default:
                         LobbyLocationHandler.TowerLocation();

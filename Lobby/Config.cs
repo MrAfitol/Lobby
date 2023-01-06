@@ -53,7 +53,9 @@
         public List<LobbyLocationType> LobbyLocation { get; set; } = new List<LobbyLocationType>()
         {
             LobbyLocationType.Tower,
-            LobbyLocationType.Intercom
+            LobbyLocationType.Intercom,
+            LobbyLocationType.GR18,
+            LobbyLocationType.SCP173
         };
     }
 }
