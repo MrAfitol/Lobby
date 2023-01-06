@@ -127,6 +127,9 @@
             try
             {
                 IsLobby = false;
+
+                IntercomDisplay._singleton.Network_overrideText = "";
+
                 foreach (var player in Player.GetPlayers())
                 {
                     player.SetRole(RoleTypeId.None);
