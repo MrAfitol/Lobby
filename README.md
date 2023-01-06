@@ -53,11 +53,15 @@ lobby_inventory:
 # In what locations can people spawn? (If it is less than 1, a random one will be selected)
 lobby_location:
 - Tower
-- Intercom
+- Intercom,
+- GR18,
+- SCP173
 ```
 
 ## LobbyLocationType
 ```
 Tower,
-Intercom
+Intercom,
+GR18,
+SCP173
 ```
