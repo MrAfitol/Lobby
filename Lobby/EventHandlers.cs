@@ -31,10 +31,11 @@
         {
             try
             {
-                Timing.CallDelayed(0.1f, () => {
-                    IsLobby = true;
+                LobbyLocationHandler.Point = new GameObject("LobbyPoint");
+                IsLobby = true;
+                SpawnManager();
 
-                    SpawnManager();
+                Timing.CallDelayed(0.1f, () => {
                     GameObject.Find("StartRound").transform.localScale = Vector3.zero;
 
                     if (lobbyTimer.IsRunning)

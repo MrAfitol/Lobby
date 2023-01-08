@@ -8,7 +8,7 @@
 
     public static class LobbyLocationHandler
     {
-        public static GameObject Point = new GameObject("LobbyPoint");
+        public static GameObject Point;
 
         public static void TowerLocation()
         {
@@ -34,7 +34,7 @@
         {
             var IcomRoom = EntranceZone.Rooms.FirstOrDefault(x => x.GameObject.name == "EZ_Intercom");
 
-            Point.transform.parent = IcomRoom.Transform;
+            Point.transform.SetParent(IcomRoom.Transform);
             Point.transform.localPosition = new Vector3(-4.16f, -3.860f, -2.113f);
             Point.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
         }
@@ -43,7 +43,7 @@
         {
             var GRRoom = LightZone.Rooms.FirstOrDefault(x => x.GameObject.name.Contains("LCZ_372"));
 
-            Point.transform.parent = GRRoom.Transform;
+            Point.transform.SetParent(GRRoom.Transform);
             Point.transform.localPosition = new Vector3(4.8f, 1f, 2.3f);
             Point.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
         }
@@ -52,7 +52,7 @@
         {
             var SCP173Room = LightZone.Rooms.FirstOrDefault(x => x.GameObject.name.Contains("LCZ_173"));
 
-            Point.transform.parent = SCP173Room.Transform;
+            Point.transform.SetParent(SCP173Room.Transform);
             Point.transform.localPosition = new Vector3(17f, 13f, 8f);
             Point.transform.localRotation = Quaternion.Euler(0f, -90f, 0f);
         }
