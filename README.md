@@ -54,10 +54,14 @@ lobby_inventory:
 lobby_location:
 - Tower
 - Intercom
+- GR18
+- SCP173
 ```
 
 ## LobbyLocationType
 ```
 Tower,
-Intercom
+Intercom,
+GR18,
+SCP173
 ```
