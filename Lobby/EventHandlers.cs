@@ -70,7 +70,7 @@
                         {
                             foreach (var item in Lobby.Instance.Config.LobbyInventory)
                             {
-                                player.ReferenceHub.inventory.ServerAddItem(item);
+                                player.AddItem(item);
                             }
                         }
                     });
@@ -135,7 +135,7 @@
             {
                 IsLobby = false;
 
-                IntercomDisplay._singleton.Network_overrideText = "";
+                if (!string.IsNullOrEmpty(IntercomDisplay._singleton.Network_overrideText)) IntercomDisplay._singleton.Network_overrideText = "";
 
                 foreach (var player in Player.GetPlayers())
                 {
@@ -196,6 +196,13 @@
                 return false;
             }
 
+            return true;
+        }
+
+        [PluginEvent(ServerEventType.PlayerUsingIntercom)]
+        public bool OnPlayerUsingIntercom(Player player, IntercomState state)
+        {
+            if (IsLobby && !Lobby.Instance.Config.AllowIcom) return false;
             return true;
         }
 

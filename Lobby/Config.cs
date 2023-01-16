@@ -36,6 +36,9 @@
         [Description("What role will people play in the lobby?")]
         public RoleTypeId LobbyPlayerRole { get; set; } = RoleTypeId.Tutorial;
 
+        [Description("Allow people to talk over the intercom?")]
+        public bool AllowIcom { get; set; } = true;
+
         [Description("Display text on Intercom? (Works only when lobby Intercom type)")]
         public bool DisplayInIcom { get; set; } = true;
 
