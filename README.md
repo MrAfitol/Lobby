@@ -43,6 +43,8 @@ players_join_text: players joined
 movement_boost_intensity: 50
 # What role will people play in the lobby?
 lobby_player_role: Tutorial
+# Allow people to talk over the intercom?
+allow_icom: true
 # Display text on Intercom? (Works only when lobby Intercom type)
 display_in_icom: true
 # What size will the text be in the Intercom? (The larger the value, the smaller it will be)
