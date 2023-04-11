@@ -4,6 +4,8 @@
 
 
 A plugin that adds a lobby when waiting for players
+
+The idea is taken from the [plugin](https://github.com/Michal78900/WaitAndChillReborn)
 ## How download ?
    - *1. Find the SCP SL server config folder*
    
@@ -39,10 +41,14 @@ round_start_text: Round starting
 player_join_text: player joined
 # What will be written when there is more than one player on the server?
 players_join_text: players joined
-# What is the movement boost intensity?
+# What is the movement boost intensity? (Max 255)
 movement_boost_intensity: 50
+# Will infinity stamina be enabled for people in the lobby?
+infinity_stamina: true
 # What role will people play in the lobby?
 lobby_player_role: Tutorial
+# Allow people to talk over the intercom?
+allow_icom: true
 # Display text on Intercom? (Works only when lobby Intercom type)
 display_in_icom: true
 # What size will the text be in the Intercom? (The larger the value, the smaller it will be)

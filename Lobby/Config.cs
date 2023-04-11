@@ -30,8 +30,11 @@
         [Description("What will be written when there is more than one player on the server?")]
         public string PlayersJoinText { get; set; } = "players joined";
 
-        [Description("What is the movement boost intensity?")]
+        [Description("What is the movement boost intensity? (Max 255)")]
         public byte MovementBoostIntensity { get; set; } = 50;
+
+        [Description("Will infinity stamina be enabled for people in the lobby?")]
+        public bool InfinityStamina { get; set; } = true;
 
         [Description("What role will people play in the lobby?")]
         public RoleTypeId LobbyPlayerRole { get; set; } = RoleTypeId.Tutorial;

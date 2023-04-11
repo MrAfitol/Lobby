@@ -2,7 +2,6 @@
 {
     using CustomPlayerEffects;
     using Interactables.Interobjects.DoorUtils;
-    using InventorySystem;
     using InventorySystem.Items;
     using InventorySystem.Items.Pickups;
     using MEC;
@@ -60,7 +59,7 @@
             {
                 if (IsLobby && (GameCore.RoundStart.singleton.NetworkTimer > 1 || GameCore.RoundStart.singleton.NetworkTimer == -2))
                 {
-                    Timing.CallDelayed(0.5f, () =>
+                    Timing.CallDelayed(0.2f, () =>
                     {
                         player.SetRole(Lobby.Instance.Config.LobbyPlayerRole);
 
@@ -73,15 +72,16 @@
                                 player.AddItem(item);
                             }
                         }
-                    });
 
-                    Timing.CallDelayed(0.6f, () =>
-                    {
-                        player.Position = LobbyLocationHandler.Point.transform.position;
-                        player.Rotation = LobbyLocationHandler.Point.transform.rotation.eulerAngles;
+                        Timing.CallDelayed(0.3f, () =>
+                        {
+                            player.Position = LobbyLocationHandler.Point.transform.position;
+                            player.Rotation = LobbyLocationHandler.Point.transform.rotation.eulerAngles;
 
-                        player.EffectsManager.EnableEffect<MovementBoost>();
-                        player.EffectsManager.ChangeState<MovementBoost>(Lobby.Instance.Config.MovementBoostIntensity);
+                            player.EffectsManager.EnableEffect<MovementBoost>();
+                            player.EffectsManager.ChangeState<MovementBoost>(Lobby.Instance.Config.MovementBoostIntensity);
+                            if (Lobby.Instance.Config.InfinityStamina) player.EffectsManager.EnableEffect<Invigorated>();
+                        });
                     });
                 }
             }
@@ -139,12 +139,13 @@
 
                 foreach (var player in Player.GetPlayers())
                 {
-                    player.SetRole(RoleTypeId.None);
+                    if (player.Role != RoleTypeId.Overwatch) player.SetRole(RoleTypeId.Spectator);
 
-                    Timing.CallDelayed(0.25f, () =>
+                    Timing.CallDelayed(0.1f, () =>
                     {
                         player.IsGodModeEnabled = false;
                         player.EffectsManager.DisableEffect<MovementBoost>();
+                        if (Lobby.Instance.Config.InfinityStamina) player.EffectsManager.DisableEffect<Invigorated>();
                     });
                 }
             }
@@ -240,12 +241,9 @@
                     text = text.Replace("{players}", $"{Player.GetPlayers().Count()} " + Lobby.Instance.Config.PlayersJoinText);
                 }
 
-                if (25 != 0 && 25 > 0)
+                for (int i = 0; i < 25; i++)
                 {
-                    for (int i = 0; i < 25; i++)
-                    {
-                        text += "\n";
-                    }
+                    text += "\n";
                 }
 
                 foreach (Player ply in Player.GetPlayers())
@@ -291,12 +289,9 @@
                     text = text.Replace("{players}", $"{Player.GetPlayers().Count()} " + Lobby.Instance.Config.PlayersJoinText);
                 }
 
-                if (25 != 0 && 25 > 0)
+                for (int i = 0; i < 25; i++)
                 {
-                    for (int i = 0; i < 25; i++)
-                    {
-                        text += "\n";
-                    }
+                    text += "\n";
                 }
 
                 IntercomDisplay._singleton.Network_overrideText = $"<size={Lobby.Instance.Config.IcomTextSize}>" + text + "</size>";
