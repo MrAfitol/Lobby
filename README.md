@@ -26,9 +26,9 @@ https://user-images.githubusercontent.com/76150070/208076431-7e7a98e3-d1b3-4365-
 ## Config
 ```yml
 # Main text ({seconds} - Either it shows how much is left until the start, or the server status is "Server is suspended", "Round starting")
-title_text: <size=50><color=#F0FF00><b>Waiting for players, {seconds}</b></color></size>
+title_text: <color=#F0FF00><b>Waiting for players, {seconds}</b></color>
 # Text showing the number of players ({players} - Text with the number of players)
-player_count_text: <size=40><color=#FFA600><i>{players}</i></color></size>
+player_count_text: <color=#FFA600><i>{players}</i></color>
 # What will be written if the lobby is locked?
 server_pause_text: Server is suspended
 # What will be written when there is a second left?
@@ -41,6 +41,14 @@ round_start_text: Round starting
 player_join_text: player joined
 # What will be written when there is more than one player on the server?
 players_join_text: players joined
+# Top text size
+top_text_size: 50
+# Bottom text size
+bottom_text_size: 40
+# Top text size in intercom
+top_text_icom_size: 150
+# Bottom text size in intercom
+bottom_text_icom_size: 140
 # What is the movement boost intensity? (Max 255)
 movement_boost_intensity: 50
 # Will infinity stamina be enabled for people in the lobby?
