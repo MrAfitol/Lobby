@@ -7,10 +7,10 @@
     public class Config
     {
         [Description("Main text ({seconds} - Either it shows how much is left until the start, or the server status is \"Server is suspended\", \"Round starting\")")]
-        public string TitleText { get; set; } = "<size=50><color=#F0FF00><b>Waiting for players, {seconds}</b></color></size>";
+        public string TitleText { get; set; } = "<color=#F0FF00><b>Waiting for players, {seconds}</b></color>";
 
         [Description("Text showing the number of players ({players} - Text with the number of players)")]
-        public string PlayerCountText { get; set; } = "<size=40><color=#FFA600><i>{players}</i></color></size>";
+        public string PlayerCountText { get; set; } = "<color=#FFA600><i>{players}</i></color>";
 
         [Description("What will be written if the lobby is locked?")]
         public string ServerPauseText { get; set; } = "Server is suspended";
@@ -29,6 +29,18 @@
 
         [Description("What will be written when there is more than one player on the server?")]
         public string PlayersJoinText { get; set; } = "players joined";
+
+        [Description("Top text size")]
+        public int TopTextSize { get; set; } = 50;
+
+        [Description("Bottom text size")]
+        public int BottomTextSize { get; set; } = 40;
+
+        [Description("Top text size")]
+        public int TopTextIcomSize { get; set; } = 150;
+
+        [Description("Bottom text size")]
+        public int BottomTextIcomSize { get; set; } = 140;
 
         [Description("What is the movement boost intensity? (Max 255)")]
         public byte MovementBoostIntensity { get; set; } = 50;

@@ -59,7 +59,7 @@
             {
                 if (IsLobby && (GameCore.RoundStart.singleton.NetworkTimer > 1 || GameCore.RoundStart.singleton.NetworkTimer == -2))
                 {
-                    Timing.CallDelayed(0.2f, () =>
+                    Timing.CallDelayed(1f, () =>
                     {
                         player.SetRole(Lobby.Instance.Config.LobbyPlayerRole);
 
@@ -73,7 +73,7 @@
                             }
                         }
 
-                        Timing.CallDelayed(0.3f, () =>
+                        Timing.CallDelayed(0.1f, () =>
                         {
                             player.Position = LobbyLocationHandler.Point.transform.position;
                             player.Rotation = LobbyLocationHandler.Point.transform.rotation.eulerAngles;
@@ -213,9 +213,9 @@
             {
                 text = string.Empty;
 
-                text += Lobby.Instance.Config.TitleText;
+                text += $"<size={Lobby.Instance.Config.TopTextSize}>" + Lobby.Instance.Config.TitleText + "</size>";
 
-                text += "\n" + Lobby.Instance.Config.PlayerCountText;
+                text += "\n" + $"<size={Lobby.Instance.Config.BottomTextSize}>" + Lobby.Instance.Config.PlayerCountText + "</size>";
 
                 short NetworkTimer = GameCore.RoundStart.singleton.NetworkTimer;
 
@@ -261,9 +261,9 @@
             {
                 text = string.Empty;
 
-                text += Lobby.Instance.Config.TitleText;
+                text += $"<size={Lobby.Instance.Config.TopTextIcomSize}>" + Lobby.Instance.Config.TitleText + "</size>";
 
-                text += "\n" + Lobby.Instance.Config.PlayerCountText;
+                text += "\n" + $"<size={Lobby.Instance.Config.BottomTextIcomSize}>" + Lobby.Instance.Config.PlayerCountText + "</size>";
 
                 short NetworkTimer = GameCore.RoundStart.singleton.NetworkTimer;
 
