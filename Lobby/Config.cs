@@ -36,10 +36,10 @@
         [Description("Bottom text size")]
         public int BottomTextSize { get; set; } = 40;
 
-        [Description("Top text size")]
+        [Description("Top text size in intercom")]
         public int TopTextIcomSize { get; set; } = 150;
 
-        [Description("Bottom text size")]
+        [Description("Bottom text size in intercom")]
         public int BottomTextIcomSize { get; set; } = 140;
 
         [Description("What is the movement boost intensity? (Max 255)")]
