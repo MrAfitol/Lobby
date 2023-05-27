@@ -1,6 +1,6 @@
 # Lobby
-[![GitHub release](https://flat.badgen.net/github/release/MrAfitol/Lobby)](https://github.com/MrAfitol/Lobby/releases/)
-![GitHub downloads](https://flat.badgen.net/github/assets-dl/MrAfitol/Lobby)
+[![Version](https://img.shields.io/github/v/release/MrAfitol/Lobby?sort=semver&style=flat-square&color=blue&label=Version)](https://github.com/MrAfitol/Lobby/releases)
+[![Downloads](https://img.shields.io/github/downloads/MrAfitol/Lobby/total?style=flat-square&color=yellow&label=Downloads)](https://github.com/MrAfitol/Lobby/releases)
 
 
 A plugin that adds a lobby when waiting for players
