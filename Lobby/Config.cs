@@ -30,6 +30,15 @@
         [Description("What will be written when there is more than one player on the server?")]
         public string PlayersJoinText { get; set; } = "players joined";
 
+        [Description("Should we use Broadcast instead of Hints?")]
+        public bool UseBC { get; set; } = true;
+
+        [Description("Clear previous broadcast? (If not, the text may not appear until the previous broadcast has disappeared)")]
+        public bool ClearPrevBC { get; set; } = true;
+
+        [Description("Vertical text position. (If UseBC mode is enabled, this option does not work)")]
+        public int VerticalPos { get; set; } = 25;
+
         [Description("Top text size")]
         public int TopTextSize { get; set; } = 50;
 
@@ -41,6 +50,9 @@
 
         [Description("Bottom text size in intercom")]
         public int BottomTextIcomSize { get; set; } = 140;
+
+        [Description("Enable the movement boost effect?")]
+        public bool EnableMovementBoost { get; set; } = true;
 
         [Description("What is the movement boost intensity? (Max 255)")]
         public byte MovementBoostIntensity { get; set; } = 50;

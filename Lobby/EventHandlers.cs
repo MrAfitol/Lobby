@@ -78,8 +78,11 @@
                             player.Position = LobbyLocationHandler.Point.transform.position;
                             player.Rotation = LobbyLocationHandler.Point.transform.rotation.eulerAngles;
 
-                            player.EffectsManager.EnableEffect<MovementBoost>();
-                            player.EffectsManager.ChangeState<MovementBoost>(Lobby.Instance.Config.MovementBoostIntensity);
+                            if (Lobby.Instance.Config.EnableMovementBoost)
+                            {
+                                player.EffectsManager.EnableEffect<MovementBoost>();
+                                player.EffectsManager.ChangeState<MovementBoost>(Lobby.Instance.Config.MovementBoostIntensity);
+                            }
                             if (Lobby.Instance.Config.InfinityStamina) player.EffectsManager.EnableEffect<Invigorated>();
                         });
                     });
@@ -144,7 +147,7 @@
                     Timing.CallDelayed(0.1f, () =>
                     {
                         player.IsGodModeEnabled = false;
-                        player.EffectsManager.DisableEffect<MovementBoost>();
+                        if (Lobby.Instance.Config.EnableMovementBoost) player.EffectsManager.DisableEffect<MovementBoost>();
                         if (Lobby.Instance.Config.InfinityStamina) player.EffectsManager.DisableEffect<Invigorated>();
                     });
                 }
@@ -213,6 +216,10 @@
             {
                 text = string.Empty;
 
+                if (Lobby.Instance.Config.VerticalPos < 0)
+                    for (int i = 0; i < ~Lobby.Instance.Config.VerticalPos; i++)
+                        text += "\n";
+
                 text += $"<size={Lobby.Instance.Config.TopTextSize}>" + Lobby.Instance.Config.TitleText + "</size>";
 
                 text += "\n" + $"<size={Lobby.Instance.Config.BottomTextSize}>" + Lobby.Instance.Config.PlayerCountText + "</size>";
@@ -241,14 +248,14 @@
                     text = text.Replace("{players}", $"{Player.GetPlayers().Count()} " + Lobby.Instance.Config.PlayersJoinText);
                 }
 
-                for (int i = 0; i < 25; i++)
-                {
-                    text += "\n";
-                }
+                if (!Lobby.Instance.Config.UseBC && Lobby.Instance.Config.VerticalPos >= 0)
+                    for (int i = 0; i < Lobby.Instance.Config.VerticalPos; i++)
+                        text += "\n";
 
                 foreach (Player ply in Player.GetPlayers())
                 {
-                    ply.ReceiveHint(text.ToString(), 1f);
+                    if (Lobby.Instance.Config.UseBC) ply.SendBroadcast(text.ToString(), 1, Broadcast.BroadcastFlags.Normal, Lobby.Instance.Config.ClearPrevBC);
+                    else ply.ReceiveHint(text.ToString(), 1f);
                 }
 
                 yield return Timing.WaitForSeconds(1f);

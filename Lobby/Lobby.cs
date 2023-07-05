@@ -13,7 +13,7 @@
         public Config Config;
 
         [PluginPriority(LoadPriority.Highest)]
-        [PluginEntryPoint("Lobby", "1.1.2", "A plugin that adds a lobby when waiting for players.", "MrAfitol")]
+        [PluginEntryPoint("Lobby", "1.1.3", "A plugin that adds a lobby when waiting for players.", "MrAfitol")]
         void LoadPlugin()
         {
             Instance = this;
