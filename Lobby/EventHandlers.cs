@@ -248,14 +248,13 @@
                     text = text.Replace("{players}", $"{Player.GetPlayers().Count()} " + Lobby.Instance.Config.PlayersJoinText);
                 }
 
-                if (!Lobby.Instance.Config.UseBC && Lobby.Instance.Config.VerticalPos >= 0)
+                if (Lobby.Instance.Config.VerticalPos >= 0)
                     for (int i = 0; i < Lobby.Instance.Config.VerticalPos; i++)
                         text += "\n";
 
                 foreach (Player ply in Player.GetPlayers())
                 {
-                    if (Lobby.Instance.Config.UseBC) ply.SendBroadcast(text.ToString(), 1, Broadcast.BroadcastFlags.Normal, Lobby.Instance.Config.ClearPrevBC);
-                    else ply.ReceiveHint(text.ToString(), 1f);
+                    ply.ReceiveHint(text.ToString(), 1f);
                 }
 
                 yield return Timing.WaitForSeconds(1f);
