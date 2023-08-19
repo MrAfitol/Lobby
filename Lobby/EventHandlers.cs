@@ -1,15 +1,13 @@
 ﻿namespace Lobby
 {
     using CustomPlayerEffects;
-    using Interactables.Interobjects.DoorUtils;
-    using InventorySystem.Items;
-    using InventorySystem.Items.Pickups;
+    using global::Lobby.API;
     using MEC;
     using PlayerRoles;
     using PlayerRoles.Voice;
     using PluginAPI.Core;
     using PluginAPI.Core.Attributes;
-    using PluginAPI.Enums;
+    using PluginAPI.Events;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -19,14 +17,18 @@
     {
         private CoroutineHandle lobbyTimer;
 
+        private CoroutineHandle rainbowColor;
+
         private string text;
 
-        private LobbyLocationType curLobbyLocationType;
+        public static bool IsIntercom = false;
 
         public static bool IsLobby = true;
 
-        [PluginEvent(ServerEventType.WaitingForPlayers)]
-        public void OnWaitingForPlayers()
+        private int r = 255, g = 0, b = 0;
+
+        [PluginEvent]
+        public void OnWaitingForPlayers(WaitingForPlayersEvent ev)
         {
             try
             {
@@ -34,16 +36,23 @@
                 IsLobby = true;
                 SpawnManager();
 
-                Timing.CallDelayed(0.1f, () => {
+                Timing.CallDelayed(0.1f, () =>
+                {
                     GameObject.Find("StartRound").transform.localScale = Vector3.zero;
 
                     if (lobbyTimer.IsRunning)
                     {
                         Timing.KillCoroutines(lobbyTimer);
                     }
+                    if (rainbowColor.IsRunning)
+                    {
+                        Timing.KillCoroutines(rainbowColor);
+                    }
 
-                    if (curLobbyLocationType == LobbyLocationType.Intercom && Lobby.Instance.Config.DisplayInIcom) lobbyTimer = Timing.RunCoroutine(LobbyIcomTimer());
-                    else lobbyTimer = Timing.RunCoroutine(LobbyTimer());
+                    if (Lobby.Config.TitleText.Contains("<rainbow>") || Lobby.Config.PlayerCountText.Contains("<rainbow>"))
+                        rainbowColor = Timing.RunCoroutine(RainbowColor());
+
+                    lobbyTimer = Timing.RunCoroutine(LobbyTimer());
                 });
             }
             catch (Exception e)
@@ -52,8 +61,34 @@
             }
         }
 
-        [PluginEvent(ServerEventType.PlayerJoined)]
-        public void OnPlayerJoin(Player player)
+        public void SpawnManager()
+        {
+            try
+            {
+                List<LocationData> locationList = new List<LocationData>();
+
+                if (Lobby.Config.LobbyLocation?.Count > 0)
+                    foreach (var item in Lobby.Config.LobbyLocation)
+                        locationList.Add(LobbyLocationHandler.LocationDatas[item]);
+
+                if (Lobby.Config.CustomRoomLocations?.Count > 0)
+                    foreach (var item in Lobby.Config.CustomRoomLocations)
+                        locationList.Add(item);
+
+                if (Lobby.Config.CustomLocations?.Count > 0)
+                    foreach (var item in Lobby.Config.CustomLocations)
+                        locationList.Add(item);
+
+                LobbyLocationHandler.SetLocation(locationList.RandomItem());
+            }
+            catch (Exception e)
+            {
+                Log.Error("[Lobby] [Method: SpawnManager] " + e.ToString());
+            }
+        }
+
+        [PluginEvent]
+        public void OnPlayerJoin(PlayerJoinedEvent ev)
         {
             try
             {
@@ -61,29 +96,29 @@
                 {
                     Timing.CallDelayed(1f, () =>
                     {
-                        player.SetRole(Lobby.Instance.Config.LobbyPlayerRole);
+                        ev.Player.SetRole(Lobby.Config.LobbyPlayerRole);
 
-                        player.IsGodModeEnabled = true;
+                        ev.Player.IsGodModeEnabled = true;
 
-                        if (Lobby.Instance.Config.LobbyInventory.Count > 0)
+                        if (Lobby.Config.LobbyInventory.Count > 0)
                         {
-                            foreach (var item in Lobby.Instance.Config.LobbyInventory)
+                            foreach (var item in Lobby.Config.LobbyInventory)
                             {
-                                player.AddItem(item);
+                                ev.Player.AddItem(item);
                             }
                         }
 
                         Timing.CallDelayed(0.1f, () =>
                         {
-                            player.Position = LobbyLocationHandler.Point.transform.position;
-                            player.Rotation = LobbyLocationHandler.Point.transform.rotation.eulerAngles;
+                            ev.Player.Position = LobbyLocationHandler.Point.transform.position;
+                            ev.Player.Rotation = LobbyLocationHandler.Point.transform.rotation.eulerAngles;
 
-                            if (Lobby.Instance.Config.EnableMovementBoost)
+                            if (Lobby.Config.EnableMovementBoost)
                             {
-                                player.EffectsManager.EnableEffect<MovementBoost>();
-                                player.EffectsManager.ChangeState<MovementBoost>(Lobby.Instance.Config.MovementBoostIntensity);
+                                ev.Player.EffectsManager.EnableEffect<MovementBoost>();
+                                ev.Player.EffectsManager.ChangeState<MovementBoost>(Lobby.Config.MovementBoostIntensity);
                             }
-                            if (Lobby.Instance.Config.InfinityStamina) player.EffectsManager.EnableEffect<Invigorated>();
+                            if (Lobby.Config.InfinityStamina) ev.Player.EffectsManager.EnableEffect<Invigorated>();
                         });
                     });
                 }
@@ -94,45 +129,8 @@
             }
         }
 
-        public void SpawnManager()
-        {
-            try
-            {
-                if (Lobby.Instance.Config.LobbyLocation.Count <= 0)
-                {
-                    LobbyLocationHandler.TowerLocation();
-                    return;
-                }
-
-                curLobbyLocationType = Lobby.Instance.Config.LobbyLocation.RandomItem();
-
-                switch (curLobbyLocationType)
-                {
-                    case LobbyLocationType.Tower:
-                        LobbyLocationHandler.TowerLocation();
-                        break;
-                    case LobbyLocationType.Intercom:
-                        LobbyLocationHandler.IntercomLocation();
-                        break;
-                    case LobbyLocationType.GR18:
-                        LobbyLocationHandler.GRLocation();
-                        break;
-                    case LobbyLocationType.SCP173:
-                        LobbyLocationHandler.SCP173Location();
-                        break;
-                    default:
-                        LobbyLocationHandler.TowerLocation();
-                        break;
-                }
-            }
-            catch(Exception e)
-            {
-                Log.Error("[Lobby] [Method: SpawnManager] " + e.ToString());
-            }
-        }
-
-        [PluginEvent(ServerEventType.RoundStart)]
-        public void OnRoundStarted()
+        [PluginEvent]
+        public void OnRoundStarted(RoundStartEvent ev)
         {
             try
             {
@@ -147,8 +145,8 @@
                     Timing.CallDelayed(0.1f, () =>
                     {
                         player.IsGodModeEnabled = false;
-                        if (Lobby.Instance.Config.EnableMovementBoost) player.EffectsManager.DisableEffect<MovementBoost>();
-                        if (Lobby.Instance.Config.InfinityStamina) player.EffectsManager.DisableEffect<Invigorated>();
+                        if (Lobby.Config.EnableMovementBoost) player.EffectsManager.DisableEffect<MovementBoost>();
+                        if (Lobby.Config.InfinityStamina) player.EffectsManager.DisableEffect<Invigorated>();
                     });
                 }
             }
@@ -158,56 +156,91 @@
             }
         }
 
-        [PluginEvent(ServerEventType.PlayerInteractDoor)]
-        public bool OnPlayerInteractDoor(Player ply, DoorVariant door, bool canOpen)
+        [PluginEvent]
+        public bool OnPlayerInteractDoor(PlayerInteractDoorEvent ev)
         {
             if (IsLobby)
             {
-                canOpen = false;
+                ev.CanOpen = false;
                 return false;
             }
 
             return true;
         }
 
-        [PluginEvent(ServerEventType.PlayerSearchPickup)]
-        public bool OnSearchPickup(Player player, ItemPickupBase pickup)
+        [PluginEvent]
+        public bool OnPlayerInteractElevator(PlayerInteractElevatorEvent ev)
         {
             if (IsLobby)
-            {
                 return false;
-            }
 
             return true;
         }
 
-        [PluginEvent(ServerEventType.PlayerDropItem)]
-        public bool OnPlayerDroppedItem(Player player, ItemBase item)
+        [PluginEvent]
+        public bool OnSearchPickup(PlayerSearchPickupEvent ev)
         {
             if (IsLobby)
-            {
                 return false;
-            }
+            return true;
+        }
+
+        [PluginEvent]
+        public bool OnPlayerDropItem(PlayerDropItemEvent ev)
+        {
+            if (IsLobby)
+                return false;
 
             return true;
         }
 
-        [PluginEvent(ServerEventType.PlayerThrowItem)]
-        public bool OnThrowItem(Player player, ItemBase item, Rigidbody rb)
+        [PluginEvent]
+        public bool OnThrowItem(PlayerThrowItemEvent ev)
         {
             if (IsLobby)
-            {
                 return false;
-            }
 
             return true;
         }
 
-        [PluginEvent(ServerEventType.PlayerUsingIntercom)]
-        public bool OnPlayerUsingIntercom(Player player, IntercomState state)
+        [PluginEvent]
+        public bool OnPlayerUsingIntercom(PlayerUsingIntercomEvent ev)
         {
-            if (IsLobby && !Lobby.Instance.Config.AllowIcom) return false;
+            if (IsLobby && !Lobby.Config.AllowIcom)
+                return false;
             return true;
+        }
+
+        private IEnumerator<float> RainbowColor()
+        {
+            r = 255; g = 0; b = 0;
+
+            while (!Round.IsRoundStarted)
+            {
+                if (r > 0 && b == 0)
+                {
+                    r -= 2;
+                    g += 2;
+                }
+
+                if (g > 0 && r == 0)
+                {
+                    g -= 2;
+                    b += 2;
+                }
+
+                if (b > 0 && g == 0)
+                {
+                    b -= 2;
+                    r += 2;
+                }
+
+                r = Mathf.Clamp(r, 0, 255);
+                g = Mathf.Clamp(g, 0, 255);
+                b = Mathf.Clamp(b, 0, 255);
+
+                yield return Timing.WaitForSeconds(0.4f);
+            }
         }
 
         private IEnumerator<float> LobbyTimer()
@@ -216,91 +249,57 @@
             {
                 text = string.Empty;
 
-                if (Lobby.Instance.Config.VerticalPos < 0)
-                    for (int i = 0; i < ~Lobby.Instance.Config.VerticalPos; i++)
+                if (Lobby.Config.VerticalPos < 0)
+                    for (int i = 0; i < ~Lobby.Config.VerticalPos; i++)
                         text += "\n";
 
-                text += $"<size={Lobby.Instance.Config.TopTextSize}>" + Lobby.Instance.Config.TitleText + "</size>";
+                text += $"<size={(IsIntercom && Lobby.Config.DisplayInIcom ? Lobby.Config.TopTextIcomSize : Lobby.Config.TopTextSize)}>" + Lobby.Config.TitleText + "</size>";
 
-                text += "\n" + $"<size={Lobby.Instance.Config.BottomTextSize}>" + Lobby.Instance.Config.PlayerCountText + "</size>";
+                text += "\n" + $"<size={(IsIntercom && Lobby.Config.DisplayInIcom ? Lobby.Config.BottomTextIcomSize : Lobby.Config.BottomTextSize)}>" + Lobby.Config.PlayerCountText + "</size>";
 
                 short NetworkTimer = GameCore.RoundStart.singleton.NetworkTimer;
 
                 switch (NetworkTimer)
                 {
-                    case -2: text = text.Replace("{seconds}", Lobby.Instance.Config.ServerPauseText); break;
+                    case -2: text = text.Replace("{seconds}", Lobby.Config.ServerPauseText); break;
 
-                    case -1: text = text.Replace("{seconds}", Lobby.Instance.Config.RoundStartText); break;
+                    case -1: text = text.Replace("{seconds}", Lobby.Config.RoundStartText); break;
 
-                    case 1: text = text.Replace("{seconds}", Lobby.Instance.Config.SecondLeftText.Replace("{seconds}", NetworkTimer.ToString())); break;
+                    case 1: text = text.Replace("{seconds}", Lobby.Config.SecondLeftText.Replace("{seconds}", NetworkTimer.ToString())); break;
 
-                    case 0: text = text.Replace("{seconds}", Lobby.Instance.Config.RoundStartText); break;
+                    case 0: text = text.Replace("{seconds}", Lobby.Config.RoundStartText); break;
 
-                    default: text = text.Replace("{seconds}", Lobby.Instance.Config.SecondsLeftText.Replace("{seconds}", NetworkTimer.ToString())); break;
+                    default: text = text.Replace("{seconds}", Lobby.Config.SecondsLeftText.Replace("{seconds}", NetworkTimer.ToString())); break;
                 }
 
                 if (Player.GetPlayers().Count() == 1)
                 {
-                    text = text.Replace("{players}", $"{Player.GetPlayers().Count()} " + Lobby.Instance.Config.PlayerJoinText);
+                    text = text.Replace("{players}", $"{Player.GetPlayers().Count()} " + Lobby.Config.PlayerJoinText);
                 }
                 else
                 {
-                    text = text.Replace("{players}", $"{Player.GetPlayers().Count()} " + Lobby.Instance.Config.PlayersJoinText);
+                    text = text.Replace("{players}", $"{Player.GetPlayers().Count()} " + Lobby.Config.PlayersJoinText);
                 }
 
-                if (Lobby.Instance.Config.VerticalPos >= 0)
-                    for (int i = 0; i < Lobby.Instance.Config.VerticalPos; i++)
+                string hex = $"{r:X2}{g:X2}{b:X2}";
+                text = text.Replace("<rainbow>", $"<color=#{hex}>");
+                text = text.Replace("</rainbow>", "</color>");
+
+                if (Lobby.Config.VerticalPos >= 0)
+                    for (int i = 0; i < Lobby.Config.VerticalPos; i++)
                         text += "\n";
 
-                foreach (Player ply in Player.GetPlayers())
+                if (!IsIntercom || !Lobby.Config.DisplayInIcom)
                 {
-                    ply.ReceiveHint(text.ToString(), 1f);
-                }
-
-                yield return Timing.WaitForSeconds(1f);
-            }
-        }
-
-        private IEnumerator<float> LobbyIcomTimer()
-        {
-            while (!Round.IsRoundStarted)
-            {
-                text = string.Empty;
-
-                text += $"<size={Lobby.Instance.Config.TopTextIcomSize}>" + Lobby.Instance.Config.TitleText + "</size>";
-
-                text += "\n" + $"<size={Lobby.Instance.Config.BottomTextIcomSize}>" + Lobby.Instance.Config.PlayerCountText + "</size>";
-
-                short NetworkTimer = GameCore.RoundStart.singleton.NetworkTimer;
-
-                switch (NetworkTimer)
-                {
-                    case -2: text = text.Replace("{seconds}", Lobby.Instance.Config.ServerPauseText); break;
-
-                    case -1: text = text.Replace("{seconds}", Lobby.Instance.Config.RoundStartText); break;
-
-                    case 1: text = text.Replace("{seconds}", Lobby.Instance.Config.SecondLeftText.Replace("{seconds}", NetworkTimer.ToString())); break;
-
-                    case 0: text = text.Replace("{seconds}", Lobby.Instance.Config.RoundStartText); break;
-
-                    default: text = text.Replace("{seconds}", Lobby.Instance.Config.SecondsLeftText.Replace("{seconds}", NetworkTimer.ToString())); break;
-                }
-
-                if (Player.GetPlayers().Count() == 1)
-                {
-                    text = text.Replace("{players}", $"{Player.GetPlayers().Count()} " + Lobby.Instance.Config.PlayerJoinText);
+                    foreach (Player ply in Player.GetPlayers())
+                    {
+                        ply.ReceiveHint(text, 1f);
+                    }
                 }
                 else
                 {
-                    text = text.Replace("{players}", $"{Player.GetPlayers().Count()} " + Lobby.Instance.Config.PlayersJoinText);
+                    IntercomDisplay._singleton.Network_overrideText = $"<size={Lobby.Config.IcomTextSize}>" + text + "</size>";
                 }
-
-                for (int i = 0; i < 25; i++)
-                {
-                    text += "\n";
-                }
-
-                IntercomDisplay._singleton.Network_overrideText = $"<size={Lobby.Instance.Config.IcomTextSize}>" + text + "</size>";
 
                 yield return Timing.WaitForSeconds(1f);
             }

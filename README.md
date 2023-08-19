@@ -6,10 +6,10 @@
 A plugin that adds a lobby when waiting for players
 
 The idea is taken from the [plugin](https://github.com/Michal78900/WaitAndChillReborn)
-## How download ?
+## How to download?
    - *1. Find the SCP SL server config folder*
    
-   *("C:\Users\(user name)\AppData\Roaming\SCP Secret Laboratory\" for windows, "/home/(user name)/.config/SCP Secret Laboratory/" for linux)*
+   *("C:\Users\(user name)\AppData\Roaming\SCP Secret Laboratory\" for windows, "/home/(user name)/.config/SCP Secret Laboratory/" for Linux)*
   
    - *2. Find the "PluginAPI" folder there, it contains the "plugins" folder.*
   
@@ -25,9 +25,9 @@ https://user-images.githubusercontent.com/76150070/208076431-7e7a98e3-d1b3-4365-
 
 ## Config
 ```yml
-# Main text ({seconds} - Either it shows how much is left until the start, or the server status is "Server is suspended", "Round starting")
+# Main text ({seconds} - Either it shows how much is left until the start, or the server status is "Server is suspended", "Round starting", <rainbow> - Change the next text a rainbow color, </rainbow> - Close a rainbow color tag)
 title_text: <color=#F0FF00><b>Waiting for players, {seconds}</b></color>
-# Text showing the number of players ({players} - Text with the number of players)
+# Text showing the number of players ({players} - Text with the number of players, <rainbow> - Change the next text a rainbow color, </rainbow> - Close a rainbow color tag)
 player_count_text: <color=#FFA600><i>{players}</i></color>
 # What will be written if the lobby is locked?
 server_pause_text: Server is suspended
@@ -41,6 +41,8 @@ round_start_text: Round starting
 player_join_text: player joined
 # What will be written when there is more than one player on the server?
 players_join_text: players joined
+# Vertical text position.
+vertical_pos: 25
 # Top text size
 top_text_size: 50
 # Bottom text size
@@ -49,6 +51,8 @@ bottom_text_size: 40
 top_text_icom_size: 150
 # Bottom text size in intercom
 bottom_text_icom_size: 140
+# Enable the movement boost effect?
+enable_movement_boost: true
 # What is the movement boost intensity? (Max 255)
 movement_boost_intensity: 50
 # Will infinity stamina be enabled for people in the lobby?
@@ -66,10 +70,31 @@ lobby_inventory:
 - Coin
 # In what locations can people spawn? (If it is less than 1, a random one will be selected)
 lobby_location:
-- Tower
+- Tower_1
+- Tower_2
+- Tower_3
+- Tower_4
+- Tower_5
 - Intercom
 - GR18
 - SCP173
+# This option is for a custom lobby location
+custom_room_locations:
+- room_name: EZ_GateA
+  offset_x: 0
+  offset_y: 1
+  offset_z: 0
+  rotation_x: 0
+  rotation_y: 0
+  rotation_z: 0
+# This option is for a custom lobby location
+custom_locations:
+- position_x: 39.262001
+  position_y: 1014.112
+  position_z: -31.8439999
+  rotation_x: 0
+  rotation_y: 0
+  rotation_z: 0
 ```
 
 ## LobbyLocationType

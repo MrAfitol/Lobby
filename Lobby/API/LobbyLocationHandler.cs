@@ -1,59 +1,69 @@
-﻿namespace Lobby
+﻿namespace Lobby.API
 {
     using PluginAPI.Core.Zones;
+    using System.Collections.Generic;
     using System.Linq;
     using UnityEngine;
-    using Random = UnityEngine.Random;
 
     public static class LobbyLocationHandler
     {
         public static GameObject Point;
 
-        public static void TowerLocation()
+        public static Dictionary<LobbyLocationType, LocationData> LocationDatas = new Dictionary<LobbyLocationType, LocationData>()
         {
-            int rndRoom = Random.Range(1, 6);
+            { LobbyLocationType.Tower_1, new CustomLocationData() { PositionX = 162.893f, PositionY = 1019.470f, PositionZ = -13.430f, RotationX = 0, RotationY = 0, RotationZ = 0 } },
+            { LobbyLocationType.Tower_2, new CustomLocationData() { PositionX = 107.698f, PositionY = 1014.048f, PositionZ = -12.555f, RotationX = 0, RotationY = 0, RotationZ = 0 } },
+            { LobbyLocationType.Tower_3, new CustomLocationData() { PositionX = 39.262f, PositionY = 1014.112f, PositionZ = -31.844f, RotationX = 0, RotationY = 0, RotationZ = 0 } },
+            { LobbyLocationType.Tower_4, new CustomLocationData() { PositionX = -15.854f, PositionY = 1014.461f, PositionZ = -31.543f, RotationX = 0, RotationY = 0, RotationZ = 0 } },
+            { LobbyLocationType.Tower_5, new CustomLocationData() { PositionX = 130.483f, PositionY = 993.366f, PositionZ = 20.601f, RotationX = 0, RotationY = 0, RotationZ = 0 } },
+            { LobbyLocationType.Intercom, new CustomRoomLocationData() { RoomName = "EZ_Intercom",  OffsetX = -4.16f, OffsetY = -3.860f, OffsetZ = -2.113f, RotationX = 0, RotationY = 180, RotationZ = 0 } },
+            { LobbyLocationType.GR18, new CustomRoomLocationData() { RoomName = "LCZ_372",  OffsetX = 4.8f, OffsetY = 1f, OffsetZ = 2.3f, RotationX = 0, RotationY = 180, RotationZ = 0 } },
+            { LobbyLocationType.SCP173, new CustomRoomLocationData() { RoomName = "LCZ_173",  OffsetX = 17f, OffsetY = 13f, OffsetZ = 8f, RotationX = 0, RotationY = -90, RotationZ = 0 } },
+        };
 
-            Vector3 position;
-
-            switch (rndRoom)
+        public static void SetLocation(LocationData locationData)
+        {
+            if (locationData is CustomRoomLocationData customRoomLocation)
             {
-                case 1: position = new Vector3(162.893f, 1019.470f, -13.430f); break;
-                case 2: position = new Vector3(107.698f, 1014.048f, -12.555f); break;
-                case 3: position = new Vector3(39.262f, 1014.112f, -31.844f); break;
-                case 4: position = new Vector3(-15.854f, 1014.461f, -31.543f); break;
-                case 5: position = new Vector3(130.483f, 993.366f, 20.601f); break;
-                default: position = new Vector3(39.262f, 1014.112f, -31.844f); break;
+                FacilityRoom Room;
+
+                if (string.IsNullOrEmpty(customRoomLocation.RoomName) || !customRoomLocation.RoomName.Contains("LCZ_") && !customRoomLocation.RoomName.Contains("HCZ_") && !customRoomLocation.RoomName.Contains("EZ_"))
+                    customRoomLocation = (CustomRoomLocationData)LocationDatas[LobbyLocationType.GR18];
+
+                switch (customRoomLocation.RoomName.Split('_')[0])
+                {
+                    case "LCZ":
+                        Room = LightZone.Rooms.First(x => x.GameObject.name.Contains(customRoomLocation.RoomName));
+                        break;
+                    case "HCZ":
+                        Room = HeavyZone.Rooms.First(x => x.GameObject.name.Contains(customRoomLocation.RoomName));
+                        break;
+                    case "EZ":
+                        Room = EntranceZone.Rooms.First(x => x.GameObject.name.Contains(customRoomLocation.RoomName));
+                        break;
+                    default:
+                        Room = null;
+                        break;
+                }
+
+                if (customRoomLocation.RoomName.Contains("Intercom"))
+                    EventHandlers.IsIntercom = true;
+
+                if (Room == null)
+                {
+                    customRoomLocation = (CustomRoomLocationData)LocationDatas[LobbyLocationType.GR18];
+                    Room = LightZone.Rooms.First(x => x.GameObject.name.Contains(customRoomLocation.RoomName));
+                }
+
+                Point.transform.SetParent(Room.Transform);
+                Point.transform.localPosition = new Vector3(customRoomLocation.OffsetX, customRoomLocation.OffsetY, customRoomLocation.OffsetZ);
+                Point.transform.localRotation = Quaternion.Euler(customRoomLocation.RotationX, customRoomLocation.RotationY, customRoomLocation.RotationZ);
             }
-
-            Point.transform.position = position;
-            Point.transform.rotation = Quaternion.identity;
-        }
-
-        public static void IntercomLocation()
-        {
-            var IcomRoom = EntranceZone.Rooms.FirstOrDefault(x => x.GameObject.name == "EZ_Intercom");
-
-            Point.transform.SetParent(IcomRoom.Transform);
-            Point.transform.localPosition = new Vector3(-4.16f, -3.860f, -2.113f);
-            Point.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
-        }
-
-        public static void GRLocation()
-        {
-            var GRRoom = LightZone.Rooms.FirstOrDefault(x => x.GameObject.name.Contains("LCZ_372"));
-
-            Point.transform.SetParent(GRRoom.Transform);
-            Point.transform.localPosition = new Vector3(4.8f, 1f, 2.3f);
-            Point.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
-        }
-
-        public static void SCP173Location()
-        {
-            var SCP173Room = LightZone.Rooms.FirstOrDefault(x => x.GameObject.name.Contains("LCZ_173"));
-
-            Point.transform.SetParent(SCP173Room.Transform);
-            Point.transform.localPosition = new Vector3(17f, 13f, 8f);
-            Point.transform.localRotation = Quaternion.Euler(0f, -90f, 0f);
+            else if (locationData is CustomLocationData customLocation)
+            {
+                Point.transform.localPosition = new Vector3(customLocation.PositionX, customLocation.PositionY, customLocation.PositionZ);
+                Point.transform.localRotation = Quaternion.Euler(customLocation.RotationX, customLocation.RotationY, customLocation.RotationZ);
+            }
         }
     }
 }
