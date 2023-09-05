@@ -92,6 +92,8 @@
         {
             try
             {
+                if (ev.Player == null) return;
+
                 if (IsLobby && (GameCore.RoundStart.singleton.NetworkTimer > 1 || GameCore.RoundStart.singleton.NetworkTimer == -2))
                 {
                     Timing.CallDelayed(1f, () =>
