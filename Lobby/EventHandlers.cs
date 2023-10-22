@@ -142,6 +142,7 @@
 
                 foreach (var player in Player.GetPlayers())
                 {
+                    player.ClearInventory();
                     if (player.Role != RoleTypeId.Overwatch) player.SetRole(RoleTypeId.Spectator);
 
                     Timing.CallDelayed(0.1f, () =>
