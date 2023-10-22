@@ -1,6 +1,7 @@
 ﻿namespace Lobby.API
 {
-    using PluginAPI.Core.Zones;
+    using MapGeneration;
+    using PluginAPI.Core;
     using System.Collections.Generic;
     using System.Linq;
     using UnityEngine;
@@ -16,46 +17,29 @@
             { LobbyLocationType.Tower_3, new CustomLocationData() { PositionX = 39.262f, PositionY = 1014.112f, PositionZ = -31.844f, RotationX = 0, RotationY = 0, RotationZ = 0 } },
             { LobbyLocationType.Tower_4, new CustomLocationData() { PositionX = -15.854f, PositionY = 1014.461f, PositionZ = -31.543f, RotationX = 0, RotationY = 0, RotationZ = 0 } },
             { LobbyLocationType.Tower_5, new CustomLocationData() { PositionX = 130.483f, PositionY = 993.366f, PositionZ = 20.601f, RotationX = 0, RotationY = 0, RotationZ = 0 } },
-            { LobbyLocationType.Intercom, new CustomRoomLocationData() { RoomName = "EZ_Intercom",  OffsetX = -4.16f, OffsetY = -3.860f, OffsetZ = -2.113f, RotationX = 0, RotationY = 180, RotationZ = 0 } },
-            { LobbyLocationType.GR18, new CustomRoomLocationData() { RoomName = "LCZ_372",  OffsetX = 4.8f, OffsetY = 1f, OffsetZ = 2.3f, RotationX = 0, RotationY = 180, RotationZ = 0 } },
-            { LobbyLocationType.SCP173, new CustomRoomLocationData() { RoomName = "LCZ_173",  OffsetX = 17f, OffsetY = 13f, OffsetZ = 8f, RotationX = 0, RotationY = -90, RotationZ = 0 } },
+            { LobbyLocationType.Intercom, new CustomRoomLocationData() { RoomNameType = RoomName.EzIntercom,  OffsetX = -4.16f, OffsetY = -3.860f, OffsetZ = -2.113f, RotationX = 0, RotationY = 180, RotationZ = 0 } },
+            { LobbyLocationType.GR18, new CustomRoomLocationData() { RoomNameType = RoomName.LczGlassroom,  OffsetX = 4.8f, OffsetY = 1f, OffsetZ = 2.3f, RotationX = 0, RotationY = 180, RotationZ = 0 } },
+            { LobbyLocationType.SCP173, new CustomRoomLocationData() { RoomNameType = RoomName.Lcz173,  OffsetX = 17f, OffsetY = 13f, OffsetZ = 8f, RotationX = 0, RotationY = -90, RotationZ = 0 } },
         };
 
         public static void SetLocation(LocationData locationData)
         {
             if (locationData is CustomRoomLocationData customRoomLocation)
             {
-                FacilityRoom Room;
+                RoomIdentifier Room;
 
-                if (string.IsNullOrEmpty(customRoomLocation.RoomName) || !customRoomLocation.RoomName.Contains("LCZ_") && !customRoomLocation.RoomName.Contains("HCZ_") && !customRoomLocation.RoomName.Contains("EZ_"))
-                    customRoomLocation = (CustomRoomLocationData)LocationDatas[LobbyLocationType.GR18];
+                Room = Map.Rooms.First(x => x.Name == customRoomLocation.RoomNameType);
 
-                switch (customRoomLocation.RoomName.Split('_')[0])
-                {
-                    case "LCZ":
-                        Room = LightZone.Rooms.First(x => x.GameObject.name.Contains(customRoomLocation.RoomName));
-                        break;
-                    case "HCZ":
-                        Room = HeavyZone.Rooms.First(x => x.GameObject.name.Contains(customRoomLocation.RoomName));
-                        break;
-                    case "EZ":
-                        Room = EntranceZone.Rooms.First(x => x.GameObject.name.Contains(customRoomLocation.RoomName));
-                        break;
-                    default:
-                        Room = null;
-                        break;
-                }
-
-                if (customRoomLocation.RoomName.Contains("Intercom"))
+                if (customRoomLocation.RoomNameType == RoomName.EzIntercom)
                     EventHandlers.IsIntercom = true;
 
                 if (Room == null)
                 {
                     customRoomLocation = (CustomRoomLocationData)LocationDatas[LobbyLocationType.GR18];
-                    Room = LightZone.Rooms.First(x => x.GameObject.name.Contains(customRoomLocation.RoomName));
+                    Room = Map.Rooms.First(x => x.Name == customRoomLocation.RoomNameType);
                 }
 
-                Point.transform.SetParent(Room.Transform);
+                Point.transform.SetParent(Room.transform);
                 Point.transform.localPosition = new Vector3(customRoomLocation.OffsetX, customRoomLocation.OffsetY, customRoomLocation.OffsetZ);
                 Point.transform.localRotation = Quaternion.Euler(customRoomLocation.RotationX, customRoomLocation.RotationY, customRoomLocation.RotationZ);
             }

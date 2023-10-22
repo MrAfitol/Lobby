@@ -12,8 +12,8 @@
         public static Config Config;
 
         [PluginPriority(LoadPriority.Highest)]
-        [PluginEntryPoint("Lobby", "1.2.2", "A plugin that adds a lobby when waiting for players.", "MrAfitol")]
-        void LoadPlugin()
+        [PluginEntryPoint("Lobby", "1.2.3", "A plugin that adds a lobby when waiting for players.", "MrAfitol")]
+        public void LoadPlugin()
         {
             Instance = this;
             EventManager.RegisterEvents<EventHandlers>(this);

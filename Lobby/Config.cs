@@ -1,6 +1,6 @@
 ﻿namespace Lobby
 {
-    using global::Lobby.API;
+    using MapGeneration;
     using PlayerRoles;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -91,7 +91,7 @@
         {
             new CustomRoomLocationData()
             {
-                RoomName = "EZ_GateA",
+                RoomNameType = RoomName.EzGateA,
                 OffsetX = 0,
                 OffsetY = 1,
                 OffsetZ = 0,
@@ -116,9 +116,13 @@
         };
     }
 
+    public class LocationData
+    {
+    }
+
     public class CustomRoomLocationData : LocationData
     {
-        public string RoomName { get; set; }
+        public RoomName RoomNameType { get; set; }
         public float OffsetX { get; set; }
         public float OffsetY { get; set; }
         public float OffsetZ { get; set; }
