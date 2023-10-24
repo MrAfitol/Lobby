@@ -92,8 +92,6 @@
         {
             try
             {
-                if (ev.Player == null) return;
-
                 if (IsLobby && (GameCore.RoundStart.singleton.NetworkTimer > 1 || GameCore.RoundStart.singleton.NetworkTimer == -2))
                 {
                     Timing.CallDelayed(1f, () =>
@@ -142,6 +140,7 @@
 
                 foreach (var player in Player.GetPlayers())
                 {
+                    player.ClearInventory();
                     if (player.Role != RoleTypeId.Overwatch) player.SetRole(RoleTypeId.Spectator);
 
                     Timing.CallDelayed(0.1f, () =>
@@ -189,6 +188,15 @@
 
         [PluginEvent]
         public bool OnPlayerDropItem(PlayerDropItemEvent ev)
+        {
+            if (IsLobby)
+                return false;
+
+            return true;
+        }
+
+        [PluginEvent]
+        public bool OnPlayerDropAmmo(PlayerDropAmmoEvent ev)
         {
             if (IsLobby)
                 return false;
@@ -295,7 +303,10 @@
                 {
                     foreach (Player ply in Player.GetPlayers())
                     {
-                        ply.ReceiveHint(text, 1f);
+                        if (ply.ReferenceHub.Mode != ClientInstanceMode.Unverified && ply != null)
+                        {
+                            ply.ReceiveHint(text, 1f);
+                        }
                     }
                 }
                 else
