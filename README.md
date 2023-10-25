@@ -80,7 +80,7 @@ lobby_location:
 - SCP173
 # This option is for a custom lobby location
 custom_room_locations:
-- room_name: EZ_GateA
+- room_name: EzGateA
   offset_x: 0
   offset_y: 1
   offset_z: 0
