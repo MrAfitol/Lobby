@@ -96,11 +96,3 @@ custom_locations:
   rotation_y: 0
   rotation_z: 0
 ```
-
-## LobbyLocationType
-```
-Tower,
-Intercom,
-GR18,
-SCP173
-```
