@@ -28,7 +28,7 @@
             {
                 RoomIdentifier Room;
 
-                Room = Map.Rooms.First(x => x.Name == customRoomLocation.RoomNameType);
+                Room = RoomIdentifier.AllRoomIdentifiers.First(x => x.Name == customRoomLocation.RoomNameType);
 
                 if (customRoomLocation.RoomNameType == RoomName.EzIntercom)
                     EventHandlers.IsIntercom = true;
@@ -36,7 +36,7 @@
                 if (Room == null)
                 {
                     customRoomLocation = (CustomRoomLocationData)LocationDatas[LobbyLocationType.GR18];
-                    Room = Map.Rooms.First(x => x.Name == customRoomLocation.RoomNameType);
+                    Room = RoomIdentifier.AllRoomIdentifiers.First(x => x.Name == customRoomLocation.RoomNameType);
                 }
 
                 Point.transform.SetParent(Room.transform);
