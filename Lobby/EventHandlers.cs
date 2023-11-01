@@ -1,5 +1,6 @@
 ﻿namespace Lobby
 {
+    using CentralAuth;
     using CustomPlayerEffects;
     using global::Lobby.API;
     using MEC;
@@ -298,7 +299,7 @@
                 if (Lobby.Config.VerticalPos >= 0)
                     for (int i = 0; i < Lobby.Config.VerticalPos; i++)
                         text += "\n";
-
+                
                 if (!IsIntercom || !Lobby.Config.DisplayInIcom)
                 {
                     foreach (Player ply in Player.GetPlayers())
