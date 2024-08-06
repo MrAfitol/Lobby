@@ -73,7 +73,7 @@
             ItemType.Coin
         };
 
-        [Description("In what locations can people spawn? (If it is less than 1, a random one will be selected)")]
+        [Description("In what locations can people spawn? (If this parameter is empty, one of the custom locations (or custom room locations) will be selected)")]
         public List<LobbyLocationType> LobbyLocation { get; set; } = new List<LobbyLocationType>()
         {
             LobbyLocationType.Tower_1,
