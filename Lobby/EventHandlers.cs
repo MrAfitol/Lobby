@@ -3,6 +3,7 @@
     using CentralAuth;
     using CustomPlayerEffects;
     using global::Lobby.API;
+    using HarmonyLib;
     using MEC;
     using PlayerRoles;
     using PlayerRoles.Voice;
@@ -35,6 +36,7 @@
             {
                 LobbyLocationHandler.Point = new GameObject("LobbyPoint");
                 IsLobby = true;
+                Lobby.Instance.Harmony.PatchAll();
                 SpawnManager();
 
                 Timing.CallDelayed(0.1f, () =>
@@ -42,13 +44,9 @@
                     GameObject.Find("StartRound").transform.localScale = Vector3.zero;
 
                     if (lobbyTimer.IsRunning)
-                    {
                         Timing.KillCoroutines(lobbyTimer);
-                    }
                     if (rainbowColor.IsRunning)
-                    {
                         Timing.KillCoroutines(rainbowColor);
-                    }
 
                     if (Lobby.Config.TitleText.Contains("<rainbow>") || Lobby.Config.PlayerCountText.Contains("<rainbow>"))
                         rainbowColor = Timing.RunCoroutine(RainbowColor());
@@ -97,30 +95,32 @@
                 {
                     Timing.CallDelayed(1f, () =>
                     {
-                        ev.Player.SetRole(Lobby.Config.LobbyPlayerRole);
-
-                        ev.Player.IsGodModeEnabled = true;
-
-                        if (Lobby.Config.LobbyInventory.Count > 0)
+                        if (!ev.Player.IsOverwatchEnabled)
                         {
-                            foreach (var item in Lobby.Config.LobbyInventory)
+                            ev.Player.SetRole(Lobby.Config.LobbyPlayerRole);
+
+                            ev.Player.IsGodModeEnabled = true;
+
+                            if (Lobby.Config.LobbyInventory.Count > 0)
                             {
-                                ev.Player.AddItem(item);
+                                foreach (var item in Lobby.Config.LobbyInventory)
+                                {
+                                    ev.Player.AddItem(item);
+                                }
                             }
+
+                            Timing.CallDelayed(0.1f, () =>
+                            {
+                                ev.Player.Position = LobbyLocationHandler.Point.transform.position;
+                                ev.Player.Rotation = LobbyLocationHandler.Point.transform.rotation.eulerAngles;
+
+                                if (Lobby.Config.EnableMovementBoost)
+                                {
+                                    ev.Player.EffectsManager.EnableEffect<MovementBoost>();
+                                    ev.Player.EffectsManager.ChangeState<MovementBoost>(Lobby.Config.MovementBoostIntensity);
+                                }
+                            });
                         }
-
-                        Timing.CallDelayed(0.1f, () =>
-                        {
-                            ev.Player.Position = LobbyLocationHandler.Point.transform.position;
-                            ev.Player.Rotation = LobbyLocationHandler.Point.transform.rotation.eulerAngles;
-
-                            if (Lobby.Config.EnableMovementBoost)
-                            {
-                                ev.Player.EffectsManager.EnableEffect<MovementBoost>();
-                                ev.Player.EffectsManager.ChangeState<MovementBoost>(Lobby.Config.MovementBoostIntensity);
-                            }
-                            if (Lobby.Config.InfinityStamina) ev.Player.EffectsManager.EnableEffect<Invigorated>();
-                        });
                     });
                 }
             }
@@ -139,18 +139,27 @@
 
                 if (!string.IsNullOrEmpty(IntercomDisplay._singleton.Network_overrideText)) IntercomDisplay._singleton.Network_overrideText = "";
 
-                foreach (var player in Player.GetPlayers())
+                foreach (var player in Player.GetPlayers().Where(x => !x.IsOverwatchEnabled))
                 {
                     player.ClearInventory();
-                    if (player.Role != RoleTypeId.Overwatch) player.SetRole(RoleTypeId.Spectator);
+                    player.SetRole(RoleTypeId.Spectator);
 
                     Timing.CallDelayed(0.1f, () =>
                     {
                         player.IsGodModeEnabled = false;
                         if (Lobby.Config.EnableMovementBoost) player.EffectsManager.DisableEffect<MovementBoost>();
-                        if (Lobby.Config.InfinityStamina) player.EffectsManager.DisableEffect<Invigorated>();
                     });
                 }
+
+                Timing.CallDelayed(1f, () =>
+                {
+                    if (lobbyTimer.IsRunning)
+                        Timing.KillCoroutines(lobbyTimer);
+                    if (rainbowColor.IsRunning)
+                        Timing.KillCoroutines(rainbowColor);
+                });
+
+                Lobby.Instance.Harmony.UnpatchAll();
             }
             catch (Exception e)
             {
