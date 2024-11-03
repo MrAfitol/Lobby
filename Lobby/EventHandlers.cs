@@ -139,7 +139,7 @@
 
                 if (!string.IsNullOrEmpty(IntercomDisplay._singleton.Network_overrideText)) IntercomDisplay._singleton.Network_overrideText = "";
 
-                foreach (var player in Player.GetPlayers().Where(x => !x.IsOverwatchEnabled))
+                foreach (var player in Player.GetPlayers().Where(x => x.Role != RoleTypeId.Overwatch))
                 {
                     player.ClearInventory();
                     player.SetRole(RoleTypeId.Spectator);
@@ -159,7 +159,7 @@
                         Timing.KillCoroutines(rainbowColor);
                 });
 
-                Lobby.Instance.Harmony.UnpatchAll();
+                Lobby.Instance.Harmony.UnpatchAll("lobby.scp.sl");
             }
             catch (Exception e)
             {
