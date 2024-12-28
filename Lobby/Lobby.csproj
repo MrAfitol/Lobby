@@ -74,8 +74,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Command\ControlCommands\AddLocationCommand.cs" />
+    <Compile Include="Command\ControlCommands\RemoveLocationCommand.cs" />
+    <Compile Include="Command\DebugCommands\GetLocalDataCommand.cs" />
+    <Compile Include="Command\DebugCommands\LocationListCommand.cs" />
+    <Compile Include="Command\DebugCommands\TpLocationCommand.cs" />
+    <Compile Include="Command\LobbyParentCommand.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="EventHandlers.cs" />
+    <Compile Include="Extensions\PlayerExtensions.cs" />
     <Compile Include="Lobby.cs" />
     <Compile Include="API\LobbyLocationHandler.cs" />
     <Compile Include="API\Enums\LobbyLocationType.cs" />
@@ -85,5 +92,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

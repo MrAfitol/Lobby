@@ -1,8 +1,8 @@
-﻿namespace Lobby.Patches
-{
-    using HarmonyLib;
-    using InventorySystem;
+﻿using HarmonyLib;
+using InventorySystem;
 
+namespace Lobby.Patches
+{
     [HarmonyPatch(typeof(Inventory), nameof(Inventory.StaminaUsageMultiplier), MethodType.Getter)]
     public class StaminaUsageMultiplierPatch
     {

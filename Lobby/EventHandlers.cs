@@ -1,20 +1,20 @@
-﻿namespace Lobby
-{
-    using CentralAuth;
-    using CustomPlayerEffects;
-    using global::Lobby.API;
-    using HarmonyLib;
-    using MEC;
-    using PlayerRoles;
-    using PlayerRoles.Voice;
-    using PluginAPI.Core;
-    using PluginAPI.Core.Attributes;
-    using PluginAPI.Events;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using UnityEngine;
+﻿using CentralAuth;
+using CustomPlayerEffects;
+using Lobby.API;
+using MEC;
+using PlayerRoles;
+using PlayerRoles.Voice;
+using PluginAPI.Core;
+using PluginAPI.Core.Attributes;
+using PluginAPI.Events;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
+namespace Lobby
+{
     public class EventHandlers
     {
         private CoroutineHandle lobbyTimer;
@@ -57,32 +57,6 @@
             catch (Exception e)
             {
                 Log.Error("[Lobby] [Event: OnWaitingForPlayers] " + e.ToString());
-            }
-        }
-
-        public void SpawnManager()
-        {
-            try
-            {
-                List<LocationData> locationList = new List<LocationData>();
-
-                if (Lobby.Config.LobbyLocation?.Count > 0)
-                    foreach (var item in Lobby.Config.LobbyLocation)
-                        locationList.Add(LobbyLocationHandler.LocationDatas[item]);
-
-                if (Lobby.Config.CustomRoomLocations?.Count > 0)
-                    foreach (var item in Lobby.Config.CustomRoomLocations)
-                        locationList.Add(item);
-
-                if (Lobby.Config.CustomLocations?.Count > 0)
-                    foreach (var item in Lobby.Config.CustomLocations)
-                        locationList.Add(item);
-
-                LobbyLocationHandler.SetLocation(locationList.RandomItem());
-            }
-            catch (Exception e)
-            {
-                Log.Error("[Lobby] [Method: SpawnManager] " + e.ToString());
             }
         }
 
@@ -231,6 +205,35 @@
             return true;
         }
 
+        public void SpawnManager()
+        {
+            try
+            {
+                List<LocationData> locationList = new List<LocationData>();
+
+                if (Lobby.Config.LobbyLocation?.Count > 0)
+                    foreach (var item in Lobby.Config.LobbyLocation)
+                        locationList.Add(LobbyLocationHandler.LocationDatas[item]);
+
+                if (Lobby.Config.CustomRoomLocations?.Count > 0)
+                    foreach (var item in Lobby.Config.CustomRoomLocations)
+                        locationList.Add(item);
+
+                if (Lobby.Config.CustomLocations?.Count > 0)
+                    foreach (var item in Lobby.Config.CustomLocations)
+                        locationList.Add(item);
+
+                if (locationList.Count <= 0)
+                    locationList.Add(LobbyLocationHandler.LocationDatas.ElementAt(Random.Range(0, LobbyLocationHandler.LocationDatas.Count - 1)).Value);
+
+                LobbyLocationHandler.SetLocation(locationList.RandomItem());
+            }
+            catch (Exception e)
+            {
+                Log.Error("[Lobby] [Method: SpawnManager] " + e.ToString());
+            }
+        }
+
         private IEnumerator<float> RainbowColor()
         {
             r = 255; g = 0; b = 0;
@@ -315,7 +318,7 @@
                     {
                         if (ply.ReferenceHub.Mode != ClientInstanceMode.Unverified && ply != null)
                         {
-                            ply.ReceiveHint(text, 1f);
+                            ply.ReceiveHint(text, 1.1f);
                         }
                     }
                 }

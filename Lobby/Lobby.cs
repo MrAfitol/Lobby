@@ -1,10 +1,10 @@
-﻿namespace Lobby
-{
-    using HarmonyLib;
-    using PluginAPI.Core.Attributes;
-    using PluginAPI.Enums;
-    using PluginAPI.Events;
+﻿using HarmonyLib;
+using PluginAPI.Core.Attributes;
+using PluginAPI.Enums;
+using PluginAPI.Events;
 
+namespace Lobby
+{
     public class Lobby
     {
         public static Lobby Instance { get; private set; }
@@ -15,7 +15,7 @@
         public Harmony Harmony { get; private set; }
 
         [PluginPriority(LoadPriority.Highest)]
-        [PluginEntryPoint("Lobby", "1.3.1", "A plugin that adds a lobby when waiting for players.", "MrAfitol")]
+        [PluginEntryPoint("Lobby", "1.4.0", "A plugin that adds a lobby when waiting for players.", "MrAfitol")]
         public void LoadPlugin()
         {
             Instance = this;

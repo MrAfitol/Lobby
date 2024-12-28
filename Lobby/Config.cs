@@ -1,10 +1,10 @@
-﻿namespace Lobby
-{
-    using MapGeneration;
-    using PlayerRoles;
-    using System.Collections.Generic;
-    using System.ComponentModel;
+﻿using MapGeneration;
+using PlayerRoles;
+using System.Collections.Generic;
+using System.ComponentModel;
 
+namespace Lobby
+{
     public class Config
     {
         [Description("Main text ({seconds} - Either it shows how much is left until the start, or the server status is \"Server is suspended\", \"Round starting\", <rainbow> - Change the next text a rainbow color, </rainbow> - Close a rainbow color tag)")]
@@ -91,7 +91,7 @@
         {
             new CustomRoomLocationData()
             {
-                RoomNameType = RoomName.EzGateA,
+                RoomNameType = RoomName.EzGateA.ToString(),
                 OffsetX = 0,
                 OffsetY = 1,
                 OffsetZ = 0,
@@ -114,6 +114,18 @@
                 RotationZ = 0,
             },
         };
+
+        [Description("The name of the role that can use commands for Lobby.")]
+        public List<string> AllowedRank { get; set; } = new List<string>()
+        {
+            "owner"
+        };
+
+        [Description("User ID that can use commands for the Lobby.")]
+        public List<string> AllowedUserID { get; set; } = new List<string>()
+        {
+            "SomeOtherSteamId64@steam"
+        };
     }
 
     public class LocationData
@@ -122,7 +134,7 @@
 
     public class CustomRoomLocationData : LocationData
     {
-        public RoomName RoomNameType { get; set; }
+        public string RoomNameType { get; set; }
         public float OffsetX { get; set; }
         public float OffsetY { get; set; }
         public float OffsetZ { get; set; }
