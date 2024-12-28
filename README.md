@@ -68,7 +68,7 @@ icom_text_size: 20
 # What items will be given when spawning a player in the lobby? (Leave blank to keep inventory empty)
 lobby_inventory:
 - Coin
-# In what locations can people spawn? (If it is less than 1, a random one will be selected)
+# In what locations can people spawn? (If this parameter is empty, one of the custom locations (or custom room locations) will be selected)
 lobby_location:
 - Tower_1
 - Tower_2
@@ -80,7 +80,7 @@ lobby_location:
 - SCP173
 # This option is for a custom lobby location
 custom_room_locations:
-- room_name: EzGateA
+- room_name_type: EzGateA
   offset_x: 0
   offset_y: 1
   offset_z: 0
@@ -95,4 +95,13 @@ custom_locations:
   rotation_x: 0
   rotation_y: 0
   rotation_z: 0
+# The name of the role that can use commands for Lobby.
+allowed_rank:
+- owner
+# User ID that can use commands for the Lobby.
+allowed_user_i_d:
+- SomeOtherSteamId64@steam
 ```
+
+## Wiki
+**Be sure to check out the [Wiki](https://github.com/MrAfitol/Lobby/wiki)**
