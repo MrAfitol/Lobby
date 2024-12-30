@@ -3,9 +3,9 @@
 [![Downloads](https://img.shields.io/github/downloads/MrAfitol/Lobby/total?style=flat-square&color=yellow&label=Downloads)](https://github.com/MrAfitol/Lobby/releases)
 
 
-A plugin that adds a lobby when waiting for players
+A plugin that adds a lobby when waiting for players.
 
-The idea is taken from the [plugin](https://github.com/Michal78900/WaitAndChillReborn)
+The idea was inspired from this [plugin](https://github.com/Michal78900/WaitAndChillReborn).
 ## How to download?
    - *1. Find the SCP SL server config folder*
    
