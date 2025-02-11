@@ -33,7 +33,7 @@ namespace Lobby.API
                     Room = RoomIdentifier.AllRoomIdentifiers.First(x => x.Name == roomName);
 
                     if (customRoomLocation.RoomNameType == RoomName.EzIntercom.ToString())
-                        EventHandlers.IsIntercom = true;
+                        EventsHandler.IsIntercom = true;
                 }
                 else if (RoomIdentifier.AllRoomIdentifiers.Count(x => x.name.Contains(customRoomLocation.RoomNameType)) > 0)
                 {

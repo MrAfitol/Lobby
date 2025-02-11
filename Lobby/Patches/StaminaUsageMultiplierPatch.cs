@@ -8,7 +8,7 @@ namespace Lobby.Patches
     {
         private static void Postfix(Inventory __instance, ref float __result)
         {
-            if (Lobby.Config.InfinityStamina && EventHandlers.IsLobby)
+            if (Lobby.Instance.Config.InfinityStamina && EventsHandler.IsLobby)
                 __result = 0;
         }
     }

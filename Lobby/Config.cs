@@ -114,18 +114,6 @@ namespace Lobby
                 RotationZ = 0,
             },
         };
-
-        [Description("The name of the role that can use commands for Lobby.")]
-        public List<string> AllowedRank { get; set; } = new List<string>()
-        {
-            "owner"
-        };
-
-        [Description("User ID that can use commands for the Lobby.")]
-        public List<string> AllowedUserID { get; set; } = new List<string>()
-        {
-            "SomeOtherSteamId64@steam"
-        };
     }
 
     public class LocationData
