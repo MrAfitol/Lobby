@@ -159,8 +159,10 @@ namespace Lobby
                 List<LocationData> locationList = new List<LocationData>();
 
                 if (Lobby.Instance.Config.LobbyLocation?.Count > 0)
-                    locationList.AddRange(LobbyLocationHandler.LocationDatas.Values);
-
+                    locationList.AddRange(Lobby.Instance.Config.LobbyLocation
+                        .Where(x => LobbyLocationHandler.LocationDatas.ContainsKey(x))
+                        .Select(x => LobbyLocationHandler.LocationDatas[x]));
+                
                 if (Lobby.Instance.Config.CustomLocations?.Count > 0)
                     locationList.AddRange(Lobby.Instance.Config.CustomLocations);
 
@@ -169,7 +171,6 @@ namespace Lobby
 
                 if (locationList.Count <= 0)
                     locationList.Add(LobbyLocationHandler.LocationDatas.ElementAt(Random.Range(0, LobbyLocationHandler.LocationDatas.Count - 1)).Value);
-
                 LobbyLocationHandler.SetLocation(locationList.RandomItem());
             }
             catch (Exception e)

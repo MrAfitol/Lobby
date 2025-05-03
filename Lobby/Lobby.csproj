@@ -37,22 +37,22 @@
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(SCP_Dependencies)\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>$(SCP_Dependencies)\14_1\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp-Publicized, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(SCP_Dependencies)\Assembly-CSharp-Publicized.dll</HintPath>
+      <HintPath>$(SCP_Dependencies)\14_1\Assembly-CSharp-Publicized.dll</HintPath>
     </Reference>
     <Reference Include="CommandSystem.Core, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\SCPSL\Plugins\Dependencies\CommandSystem.Core.dll</HintPath>
+      <HintPath>$(SCP_Dependencies)\14_1\CommandSystem.Core.dll</HintPath>
     </Reference>
     <Reference Include="LabApi">
-      <HintPath>..\..\..\SCPSL\Plugins\Dependencies\LabApi.dll</HintPath>
+      <HintPath>$(SCP_Dependencies)\14_1\LabApi.dll</HintPath>
     </Reference>
     <Reference Include="Mirror, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(SCP_Dependencies)\Mirror.dll</HintPath>
+      <HintPath>$(SCP_Dependencies)\14_1\Mirror.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -63,18 +63,18 @@
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(SCP_Dependencies)\UnityEngine.dll</HintPath>
+      <HintPath>$(SCP_Dependencies)\14_1\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(SCP_Dependencies)\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>$(SCP_Dependencies)\14_1\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.PhysicsModule">
-      <HintPath>$(SCP_Dependencies)\UnityEngine.PhysicsModule.dll</HintPath>
+      <HintPath>$(SCP_Dependencies)\14_1\UnityEngine.PhysicsModule.dll</HintPath>
     </Reference>
     <Reference Include="YamlDotNet, Version=11.0.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\SCPSL\Plugins\Dependencies\YamlDotNet.dll</HintPath>
+      <HintPath>$(SCP_Dependencies)\14_1\YamlDotNet.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
