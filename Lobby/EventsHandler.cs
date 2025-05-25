@@ -1,7 +1,7 @@
 ﻿using CentralAuth;
 using CustomPlayerEffects;
 using LabApi.Events.Arguments.PlayerEvents;
-using LabApi.Events.CustomHandlers;
+using LabApi.Events.Handlers;
 using LabApi.Features.Wrappers;
 using Lobby.API;
 using MEC;
@@ -16,21 +16,18 @@ using Random = UnityEngine.Random;
 
 namespace Lobby
 {
-    public class EventsHandler : CustomEventsHandler
+    public class EventsHandler
     {
-        private CoroutineHandle lobbyTimer;
+        public static bool IsIntercom { get; set; } = false;
+        public static bool IsLobby { get; set; } = true;
 
-        private CoroutineHandle rainbowColor;
-
+        private CoroutineHandle lobbyTimer, rainbowColor;
+        private int r = 255, g = 0, b = 0;
         private string text;
 
-        public static bool IsIntercom = false;
+        #region Events
 
-        public static bool IsLobby = true;
-
-        private int r = 255, g = 0, b = 0;
-
-        public override void OnServerWaitingForPlayers()
+        public void OnWaitingForPlayers()
         {
             try
             {
@@ -38,6 +35,7 @@ namespace Lobby
                 IsLobby = true;
                 IsIntercom = false;
                 Lobby.Instance.Harmony.PatchAll();
+                RegisterHandlers();
                 SpawnManager();
 
                 Timing.CallDelayed(0.1f, () =>
@@ -57,11 +55,11 @@ namespace Lobby
             }
             catch (Exception e)
             {
-                Logger.Error("[Lobby] [Event: OnServerWaitingForPlayers] " + e.ToString());
+                Logger.Error("[Event: OnWaitingForPlayers] " + e.ToString());
             }
         }
 
-        public override void OnPlayerJoined(PlayerJoinedEventArgs ev)
+        public void OnPlayerJoined(PlayerJoinedEventArgs ev)
         {
             try
             {
@@ -99,14 +97,15 @@ namespace Lobby
             }
             catch (Exception e)
             {
-                Logger.Error("[Lobby] [Event: OnPlayerJoined] " + e.ToString());
+                Logger.Error("[Event: OnPlayerJoined] " + e.ToString());
             }
         }
 
-        public override void OnServerRoundStarted()
+        public void OnRoundStarted()
         {
             try
             {
+                UnregisterHandlers();
                 IsLobby = false;
 
                 if (!string.IsNullOrEmpty(IntercomDisplay._singleton.Network_overrideText)) IntercomDisplay._singleton.Network_overrideText = "";
@@ -134,25 +133,53 @@ namespace Lobby
             }
             catch (Exception e)
             {
-                Logger.Error("[Lobby] [Event: OnRoundStarted] " + e.ToString());
+                Logger.Error("[Event: OnRoundStarted] " + e.ToString());
             }
         }
 
-        public override void OnPlayerInteractingDoor(PlayerInteractingDoorEventArgs ev) => ev.IsAllowed = !IsLobby;
+        #endregion
 
-        public override void OnPlayerInteractingElevator(PlayerInteractingElevatorEventArgs ev) => ev.IsAllowed = !IsLobby;
+        #region Methods
 
-        public override void OnPlayerSearchingPickup(PlayerSearchingPickupEventArgs ev) => ev.IsAllowed = !IsLobby;
+        public void RegisterHandlers()
+        {
+            try
+            {
+                PlayerEvents.InteractingDoor += Lobby.Instance.RestrictionsHandler.OnPlayerInteractingDoor;
+                PlayerEvents.InteractingElevator += Lobby.Instance.RestrictionsHandler.OnPlayerInteractingElevator;
+                PlayerEvents.SearchingPickup += Lobby.Instance.RestrictionsHandler.OnPlayerSearchingPickup;
+                PlayerEvents.DroppingItem += Lobby.Instance.RestrictionsHandler.OnPlayerDroppingItem;
+                PlayerEvents.DroppingAmmo += Lobby.Instance.RestrictionsHandler.OnPlayerDroppingAmmo;
+                PlayerEvents.ThrowingItem += Lobby.Instance.RestrictionsHandler.OnPlayerThrowingItem;
+                PlayerEvents.UsingIntercom += Lobby.Instance.RestrictionsHandler.OnPlayerUsingIntercom;
+                PlayerEvents.Joined += OnPlayerJoined;
+            }
+            catch (Exception e)
+            {
+                Logger.Error("[Lobby] [Method: RegisterHandlers] " + e.ToString());
+            }
+        }
 
-        public override void OnPlayerDroppingItem(PlayerDroppingItemEventArgs ev) => ev.IsAllowed = !IsLobby;
+        public void UnregisterHandlers()
+        {
+            try
+            {
+                PlayerEvents.InteractingDoor -= Lobby.Instance.RestrictionsHandler.OnPlayerInteractingDoor;
+                PlayerEvents.InteractingElevator -= Lobby.Instance.RestrictionsHandler.OnPlayerInteractingElevator;
+                PlayerEvents.SearchingPickup -= Lobby.Instance.RestrictionsHandler.OnPlayerSearchingPickup;
+                PlayerEvents.DroppingItem += Lobby.Instance.RestrictionsHandler.OnPlayerDroppingItem;
+                PlayerEvents.DroppingAmmo -= Lobby.Instance.RestrictionsHandler.OnPlayerDroppingAmmo;
+                PlayerEvents.ThrowingItem -= Lobby.Instance.RestrictionsHandler.OnPlayerThrowingItem;
+                PlayerEvents.UsingIntercom -= Lobby.Instance.RestrictionsHandler.OnPlayerUsingIntercom;
+                PlayerEvents.Joined -= OnPlayerJoined;
+            }
+            catch (Exception e)
+            {
+                Logger.Error("[Lobby] [Method: UnregisterHandlers] " + e.ToString());
+            }
+        }
 
-        public override void OnPlayerDroppingAmmo(PlayerDroppingAmmoEventArgs ev) => ev.IsAllowed = !IsLobby;
-
-        public override void OnPlayerThrowingItem(PlayerThrowingItemEventArgs ev) => ev.IsAllowed = !IsLobby;
-
-        public override void OnPlayerUsingIntercom(PlayerUsingIntercomEventArgs ev) => ev.IsAllowed = (IsLobby && !Lobby.Instance.Config.AllowIcom ? false : true);
-
-        public void SpawnManager()
+        private void SpawnManager()
         {
             try
             {
@@ -162,7 +189,7 @@ namespace Lobby
                     locationList.AddRange(Lobby.Instance.Config.LobbyLocation
                         .Where(x => LobbyLocationHandler.LocationDatas.ContainsKey(x))
                         .Select(x => LobbyLocationHandler.LocationDatas[x]));
-                
+
                 if (Lobby.Instance.Config.CustomLocations?.Count > 0)
                     locationList.AddRange(Lobby.Instance.Config.CustomLocations);
 
@@ -230,13 +257,9 @@ namespace Lobby
                 switch (NetworkTimer)
                 {
                     case -2: text = text.Replace("{seconds}", Lobby.Instance.Config.ServerPauseText); break;
-
                     case -1: text = text.Replace("{seconds}", Lobby.Instance.Config.RoundStartText); break;
-
                     case 1: text = text.Replace("{seconds}", Lobby.Instance.Config.SecondLeftText.Replace("{seconds}", NetworkTimer.ToString())); break;
-
                     case 0: text = text.Replace("{seconds}", Lobby.Instance.Config.RoundStartText); break;
-
                     default: text = text.Replace("{seconds}", Lobby.Instance.Config.SecondsLeftText.Replace("{seconds}", NetworkTimer.ToString())); break;
                 }
 
@@ -263,5 +286,7 @@ namespace Lobby
                 yield return Timing.WaitForSeconds(1f);
             }
         }
+
+        #endregion
     }
 }

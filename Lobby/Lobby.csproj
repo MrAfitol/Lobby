@@ -85,10 +85,11 @@
     <Compile Include="Command\DebugCommands\TpLocationCommand.cs" />
     <Compile Include="Command\LobbyParentCommand.cs" />
     <Compile Include="Config.cs" />
-    <Compile Include="EventsHandler.cs" />
+    <Compile Include="RestrictionsHandler.cs" />
     <Compile Include="Lobby.cs" />
     <Compile Include="API\LobbyLocationHandler.cs" />
     <Compile Include="API\Enums\LobbyLocationType.cs" />
+    <Compile Include="EventsHandler.cs" />
     <Compile Include="Patches\StaminaUsageMultiplierPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
