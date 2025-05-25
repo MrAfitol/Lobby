@@ -8,7 +8,10 @@ namespace Lobby
 
         public void OnPlayerInteractingDoor(PlayerInteractingDoorEventArgs ev) => ev.IsAllowed = !IsLobby;
 
-        public void OnPlayerInteractingElevator(PlayerInteractingElevatorEventArgs ev) => ev.IsAllowed = !IsLobby;
+        public void OnPlayerInteractingElevator(PlayerInteractingElevatorEventArgs ev)
+        {
+            if (IsLobby) ev.IsAllowed = false;
+        }
 
         public void OnPlayerSearchingPickup(PlayerSearchingPickupEventArgs ev) => ev.IsAllowed = !IsLobby;
 

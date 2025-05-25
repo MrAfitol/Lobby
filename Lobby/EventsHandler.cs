@@ -277,11 +277,12 @@ namespace Lobby
                         text += "\n";
 
                 if (!IsIntercom || !Lobby.Instance.Config.DisplayInIcom)
+                {
                     foreach (Player ply in Player.List)
                         if (ply.ReferenceHub.Mode != ClientInstanceMode.Unverified && ply.ReferenceHub.Mode != ClientInstanceMode.DedicatedServer && ply != null)
                             ply.SendHint(text, 1.05f);
-                        else
-                            IntercomDisplay._singleton.Network_overrideText = $"<size={Lobby.Instance.Config.IcomTextSize}>" + text + "</size>";
+                }
+                else IntercomDisplay._singleton.Network_overrideText = $"<size={Lobby.Instance.Config.IcomTextSize}>" + text + "</size>";
 
                 yield return Timing.WaitForSeconds(1f);
             }
