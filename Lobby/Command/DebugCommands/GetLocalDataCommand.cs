@@ -1,6 +1,6 @@
 ﻿using CommandSystem;
-using Lobby.Extensions;
-using PluginAPI.Core;
+using LabApi.Features.Permissions;
+using LabApi.Features.Wrappers;
 using System;
 using UnityEngine;
 
@@ -18,7 +18,7 @@ namespace Lobby.Command.DebugCommands
         {
             Player playerSender = Player.Get(sender);
 
-            if (!playerSender.IsAllowCommand())
+            if (!playerSender.HasAnyPermission("lobby.*", "lobby.debug.*", "lobby.debug.getld"))
             {
                 response = $"You don't have permission to use this command!";
                 return false;
@@ -38,10 +38,10 @@ namespace Lobby.Command.DebugCommands
 
             GameObject Point = new GameObject("Point");
             Point.transform.position = playerSender.Position;
-            Point.transform.eulerAngles = playerSender.Rotation;
-            Point.transform.SetParent(playerSender.Room.transform);
+            Point.transform.rotation = playerSender.Rotation;
+            Point.transform.SetParent(playerSender.Room.Transform);
 
-            response = $"Room name {playerSender.Room.name}; Local position: {Point.transform.localPosition.ToString()}; Local Rotation: {Point.transform.localEulerAngles.ToString()}.";
+            response = $"Room name {playerSender.Room.GameObject.name}; Local position: {Point.transform.localPosition.ToString()}; Local Rotation: {Point.transform.localEulerAngles.ToString()}.";
             return true;
         }
     }

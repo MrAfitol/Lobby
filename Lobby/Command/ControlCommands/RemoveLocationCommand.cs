@@ -1,6 +1,6 @@
 ﻿using CommandSystem;
-using Lobby.Extensions;
-using PluginAPI.Core;
+using LabApi.Features.Permissions;
+using LabApi.Features.Wrappers;
 using System;
 
 namespace Lobby.Command.ControlCommands
@@ -17,7 +17,7 @@ namespace Lobby.Command.ControlCommands
         {
             Player playerSender = Player.Get(sender);
 
-            if (!playerSender.IsAllowCommand())
+            if (!playerSender.HasAnyPermission("lobby.*", "lobby.control.*", "lobby.control.remove"))
             {
                 response = $"You don't have permission to use this command!";
                 return false;
@@ -35,32 +35,30 @@ namespace Lobby.Command.ControlCommands
                 return false;
             }
 
-            var handler = PluginHandler.Get(Lobby.Instance);
-
             switch (arguments.At(0))
             {
                 case "room":
-                    if (Lobby.Config.CustomRoomLocations == null || Lobby.Config.CustomRoomLocations?.Count - 1 < index)
+                    if (Lobby.Instance.Config.CustomRoomLocations == null || Lobby.Instance.Config.CustomRoomLocations?.Count - 1 < index)
                     {
                         response = $"Custom location at index {index} was not found.";
                         return false;
                     }
 
-                    Lobby.Config.CustomRoomLocations.RemoveAt(index);
+                    Lobby.Instance.Config.CustomRoomLocations.RemoveAt(index);
+                    Lobby.Instance.SaveConfig();
 
-                    handler.SaveConfig(Lobby.Instance, nameof(Lobby.Config));
                     response = $"Custom location at index {index} has been removed.";
                     return true;
                 case "static":
-                    if (Lobby.Config.CustomLocations == null || Lobby.Config.CustomLocations?.Count - 1 < index)
+                    if (Lobby.Instance.Config.CustomLocations == null || Lobby.Instance.Config.CustomLocations?.Count - 1 < index)
                     {
                         response = $"Custom location at index {index} was not found.";
                         return false;
                     }
 
-                    Lobby.Config.CustomLocations.RemoveAt(index);
+                    Lobby.Instance.Config.CustomLocations.RemoveAt(index);
+                    Lobby.Instance.SaveConfig();
 
-                    handler.SaveConfig(Lobby.Instance, nameof(Lobby.Config));
                     response = $"Custom location at index {index} has been removed.";
                     return true;
                 default:

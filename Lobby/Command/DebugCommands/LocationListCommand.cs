@@ -1,6 +1,6 @@
 ﻿using CommandSystem;
-using Lobby.Extensions;
-using PluginAPI.Core;
+using LabApi.Features.Permissions;
+using LabApi.Features.Wrappers;
 using System;
 
 namespace Lobby.Command.DebugCommands
@@ -17,7 +17,7 @@ namespace Lobby.Command.DebugCommands
         {
             Player playerSender = Player.Get(sender);
 
-            if (!playerSender.IsAllowCommand())
+            if (!playerSender.HasAnyPermission("lobby.*", "lobby.debug.*", "lobby.debug.loclist"))
             {
                 response = $"You don't have permission to use this command!";
                 return false;
@@ -35,16 +35,16 @@ namespace Lobby.Command.DebugCommands
             {
                 case "all":
                     resString += "Room locations:\n";
-                    if (Lobby.Config.CustomRoomLocations?.Count > 0)
+                    if (Lobby.Instance.Config.CustomRoomLocations?.Count > 0)
                     {
-                        foreach (var item in Lobby.Config.CustomRoomLocations)
+                        foreach (var item in Lobby.Instance.Config.CustomRoomLocations)
                             resString += item.RoomNameType + " " + $"({item.OffsetX}, {item.OffsetY}, {item.OffsetZ})\n";
                     }
 
                     resString += "\nStatic locations:\n";
-                    if (Lobby.Config.CustomLocations?.Count > 0)
+                    if (Lobby.Instance.Config.CustomLocations?.Count > 0)
                     {
-                        foreach (var item in Lobby.Config.CustomLocations)
+                        foreach (var item in Lobby.Instance.Config.CustomLocations)
                             resString += $"({item.PositionX}, {item.PositionY}, {item.PositionZ})\n";
                     }
 
@@ -52,11 +52,11 @@ namespace Lobby.Command.DebugCommands
                     return true;
                 case "room":
                     resString += "Room locations:\n";
-                    if (Lobby.Config.CustomRoomLocations?.Count > 0)
+                    if (Lobby.Instance.Config.CustomRoomLocations?.Count > 0)
                     {
-                        for (int i = 0; i < Lobby.Config.CustomRoomLocations.Count; i++)
+                        for (int i = 0; i < Lobby.Instance.Config.CustomRoomLocations.Count; i++)
                         {
-                            CustomRoomLocationData data = Lobby.Config.CustomRoomLocations[i];
+                            CustomRoomLocationData data = Lobby.Instance.Config.CustomRoomLocations[i];
                             resString += $"({i}) " + data.RoomNameType + " " + $"({data.OffsetX}, {data.OffsetY}, {data.OffsetZ})\n";
                         }
                     }
@@ -65,11 +65,11 @@ namespace Lobby.Command.DebugCommands
                     return true;
                 case "static":
                     resString += "Static locations:\n";
-                    if (Lobby.Config.CustomLocations?.Count > 0)
+                    if (Lobby.Instance.Config.CustomLocations?.Count > 0)
                     {
-                        for (int i = 0; i < Lobby.Config.CustomLocations.Count; i++)
+                        for (int i = 0; i < Lobby.Instance.Config.CustomLocations.Count; i++)
                         {
-                            CustomLocationData data = Lobby.Config.CustomLocations[i];
+                            CustomLocationData data = Lobby.Instance.Config.CustomLocations[i];
                             resString += $"({i}) " + $"({data.PositionX}, {data.PositionY}, {data.PositionZ})\n";
                         }
                     }

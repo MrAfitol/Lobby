@@ -12,11 +12,11 @@ namespace Lobby.API
 
         public static Dictionary<LobbyLocationType, LocationData> LocationDatas = new Dictionary<LobbyLocationType, LocationData>()
         {
-            { LobbyLocationType.Tower_1, new CustomLocationData() { PositionX = 162.893f, PositionY = 1019.470f, PositionZ = -13.430f, RotationX = 0, RotationY = 0, RotationZ = 0 } },
-            { LobbyLocationType.Tower_2, new CustomLocationData() { PositionX = 107.698f, PositionY = 1014.048f, PositionZ = -12.555f, RotationX = 0, RotationY = 0, RotationZ = 0 } },
-            { LobbyLocationType.Tower_3, new CustomLocationData() { PositionX = 39.262f, PositionY = 1014.112f, PositionZ = -31.844f, RotationX = 0, RotationY = 0, RotationZ = 0 } },
-            { LobbyLocationType.Tower_4, new CustomLocationData() { PositionX = -15.854f, PositionY = 1014.461f, PositionZ = -31.543f, RotationX = 0, RotationY = 0, RotationZ = 0 } },
-            { LobbyLocationType.Tower_5, new CustomLocationData() { PositionX = 130.483f, PositionY = 993.366f, PositionZ = 20.601f, RotationX = 0, RotationY = 0, RotationZ = 0 } },
+            { LobbyLocationType.Tower_1, new CustomRoomLocationData() { RoomNameType = RoomName.Outside.ToString(),  OffsetX = 162.893f, OffsetY = 20f, OffsetZ = -13.430f, RotationX = 0, RotationY = 270, RotationZ = 0 } },
+            { LobbyLocationType.Tower_2, new CustomRoomLocationData() { RoomNameType = RoomName.Outside.ToString(),  OffsetX = 108.03f, OffsetY = 15f, OffsetZ = -13.71f, RotationX = 0, RotationY = 90, RotationZ = 0 } },
+            { LobbyLocationType.Tower_3, new CustomRoomLocationData() { RoomNameType = RoomName.Outside.ToString(),  OffsetX = 39.12f, OffsetY = 15f, OffsetZ = -32f, RotationX = 0, RotationY = 270, RotationZ = 0 } },
+            { LobbyLocationType.Tower_4, new CustomRoomLocationData() { RoomNameType = RoomName.Outside.ToString(),  OffsetX = -15.854f, OffsetY = 15f, OffsetZ = -31.543f, RotationX = 0, RotationY = 90, RotationZ = 0 } },
+            { LobbyLocationType.Tower_5, new CustomRoomLocationData() { RoomNameType = RoomName.Outside.ToString(),  OffsetX = 130.43f, OffsetY = -5.6f, OffsetZ = 21f, RotationX = 0, RotationY = 180, RotationZ = 0 } },
             { LobbyLocationType.Intercom, new CustomRoomLocationData() { RoomNameType = RoomName.EzIntercom.ToString(),  OffsetX = -4.16f, OffsetY = -3.860f, OffsetZ = -2.113f, RotationX = 0, RotationY = 180, RotationZ = 0 } },
             { LobbyLocationType.GR18, new CustomRoomLocationData() { RoomNameType = RoomName.LczGlassroom.ToString(),  OffsetX = 4.8f, OffsetY = 1f, OffsetZ = 2.3f, RotationX = 0, RotationY = 180, RotationZ = 0 } },
             { LobbyLocationType.SCP173, new CustomRoomLocationData() { RoomNameType = RoomName.Lcz173.ToString(),  OffsetX = 17f, OffsetY = 13f, OffsetZ = 8f, RotationX = 0, RotationY = -90, RotationZ = 0 } },
@@ -33,7 +33,7 @@ namespace Lobby.API
                     Room = RoomIdentifier.AllRoomIdentifiers.First(x => x.Name == roomName);
 
                     if (customRoomLocation.RoomNameType == RoomName.EzIntercom.ToString())
-                        EventHandlers.IsIntercom = true;
+                        EventsHandler.IsIntercom = true;
                 }
                 else if (RoomIdentifier.AllRoomIdentifiers.Count(x => x.name.Contains(customRoomLocation.RoomNameType)) > 0)
                 {
