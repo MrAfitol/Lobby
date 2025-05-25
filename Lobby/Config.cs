@@ -107,7 +107,7 @@ namespace Lobby
             new CustomLocationData()
             {
                 PositionX = 39.262f,
-                PositionY = 1014.112f,
+                PositionY = 315f,
                 PositionZ = -31.844f,
                 RotationX = 0,
                 RotationY = 0,
