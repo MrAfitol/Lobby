@@ -167,7 +167,7 @@ namespace Lobby
                 PlayerEvents.InteractingDoor -= Lobby.Instance.RestrictionsHandler.OnPlayerInteractingDoor;
                 PlayerEvents.InteractingElevator -= Lobby.Instance.RestrictionsHandler.OnPlayerInteractingElevator;
                 PlayerEvents.SearchingPickup -= Lobby.Instance.RestrictionsHandler.OnPlayerSearchingPickup;
-                PlayerEvents.DroppingItem += Lobby.Instance.RestrictionsHandler.OnPlayerDroppingItem;
+                PlayerEvents.DroppingItem -= Lobby.Instance.RestrictionsHandler.OnPlayerDroppingItem;
                 PlayerEvents.DroppingAmmo -= Lobby.Instance.RestrictionsHandler.OnPlayerDroppingAmmo;
                 PlayerEvents.ThrowingItem -= Lobby.Instance.RestrictionsHandler.OnPlayerThrowingItem;
                 PlayerEvents.UsingIntercom -= Lobby.Instance.RestrictionsHandler.OnPlayerUsingIntercom;
